@@ -57,21 +57,21 @@ def append_todo_to_file(
     
     # If both scheduled and deadline exist, put them on the same line
     if scheduled and deadline:
-        additional_lines.append(f"  SCHEDULED: <{scheduled}> DEADLINE: <{deadline}>")
+        additional_lines.append(f"SCHEDULED: <{scheduled}> DEADLINE: <{deadline}>")
     elif scheduled:
-        additional_lines.append(f"  SCHEDULED: <{scheduled}>")
+        additional_lines.append(f"SCHEDULED: <{scheduled}>")
     elif deadline:
-        additional_lines.append(f"  DEADLINE: <{deadline}>")
+        additional_lines.append(f"DEADLINE: <{deadline}>")
     
     # Add properties drawer if properties exist
     if properties:
         # Ensure property keys are uppercase (org-mode convention)
         uppercased_properties = {k.upper(): v for k, v in properties.items()}
         
-        additional_lines.append("  :PROPERTIES:")
+        additional_lines.append(":PROPERTIES:")
         for prop_name, prop_value in uppercased_properties.items():
-            additional_lines.append(f"  :{prop_name}: {prop_value}")
-        additional_lines.append("  :END:")
+            additional_lines.append(f":{prop_name}: {prop_value}")
+        additional_lines.append(":END:")
     
     # Combine everything
     todo_text = todo_line
