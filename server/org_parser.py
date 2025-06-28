@@ -15,7 +15,8 @@ def append_todo_to_file(
     tags: List[str] = None,
     scheduled: Optional[str] = None,
     deadline: Optional[str] = None,
-    properties: Optional[dict] = None
+    properties: Optional[dict] = None,
+    body: Optional[str] = None
 ) -> str:
     """
     Append a TODO item to an org file.
@@ -29,6 +30,7 @@ def append_todo_to_file(
         scheduled: Scheduled date (org format)
         deadline: Deadline date (org format)
         properties: Dict of properties for properties drawer
+        body: Additional content/notes for the TODO
     
     Returns:
         The TODO item text that was appended
@@ -77,6 +79,10 @@ def append_todo_to_file(
     todo_text = todo_line
     if additional_lines:
         todo_text += "\n" + "\n".join(additional_lines)
+    
+    # Add body if provided (separated by blank line)
+    if body:
+        todo_text += "\n\n" + body.strip()
     
     # Append to file
     file_path_obj = Path(file_path)

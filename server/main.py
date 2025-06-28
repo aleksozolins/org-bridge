@@ -29,6 +29,7 @@ class TodoItem(BaseModel):
     scheduled: Optional[str] = None
     deadline: Optional[str] = None
     properties: Optional[Dict[str, str]] = None
+    body: Optional[str] = None
     file_path: Optional[str] = None
 
 class CreateTodoRequest(BaseModel):
@@ -39,6 +40,7 @@ class CreateTodoRequest(BaseModel):
     scheduled: Optional[str] = None
     deadline: Optional[str] = None
     properties: Optional[Dict[str, str]] = None
+    body: Optional[str] = None
     file_name: Optional[str] = None  # Which org file to add to
 
 class NoteRequest(BaseModel):
@@ -97,7 +99,8 @@ async def create_todo(todo: CreateTodoRequest):
             tags=todo.tags,
             scheduled=todo.scheduled,
             deadline=todo.deadline,
-            properties=todo.properties
+            properties=todo.properties,
+            body=todo.body
         )
         
         # Generate a simple ID based on timestamp
@@ -112,6 +115,7 @@ async def create_todo(todo: CreateTodoRequest):
             scheduled=todo.scheduled,
             deadline=todo.deadline,
             properties=todo.properties,
+            body=todo.body,
             file_path=file_path
         )
         
@@ -130,7 +134,8 @@ async def update_todo(todo_id: str, todo: CreateTodoRequest):
         tags=todo.tags,
         scheduled=todo.scheduled,
         deadline=todo.deadline,
-        properties=todo.properties
+        properties=todo.properties,
+        body=todo.body
     )
 
 @app.get("/agenda")
