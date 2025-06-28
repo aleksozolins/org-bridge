@@ -50,12 +50,16 @@ def append_todo_to_file(
     
     todo_line = " ".join(todo_parts)
     
-    # Add scheduling/deadline info on next lines if provided
+    # Add scheduling/deadline info
     additional_lines = []
-    if scheduled:
-        additional_lines.append(f"SCHEDULED: <{scheduled}>")
-    if deadline:
-        additional_lines.append(f"DEADLINE: <{deadline}>")
+    
+    # If both scheduled and deadline exist, put them on the same line
+    if scheduled and deadline:
+        additional_lines.append(f"  SCHEDULED: <{scheduled}> DEADLINE: <{deadline}>")
+    elif scheduled:
+        additional_lines.append(f"  SCHEDULED: <{scheduled}>")
+    elif deadline:
+        additional_lines.append(f"  DEADLINE: <{deadline}>")
     
     # Combine everything
     todo_text = todo_line
