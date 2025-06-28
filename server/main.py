@@ -16,6 +16,8 @@ app = FastAPI(
 # Configuration
 ORG_FILES_DIR = os.getenv("ORG_FILES_DIR", str(Path.home() / "docs" / "org"))
 INBOX_FILENAME = os.getenv("INBOX_FILENAME", "inbox.txt")
+SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
+SERVER_PORT = int(os.getenv("SERVER_PORT", "8247"))
 
 # Pydantic models
 class TodoItem(BaseModel):
@@ -147,4 +149,4 @@ async def create_note(note: NoteRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000) 
+    uvicorn.run(app, host=SERVER_HOST, port=SERVER_PORT) 
