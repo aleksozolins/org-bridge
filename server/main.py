@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List, Optional, Dict
 import os
 from pathlib import Path
 from datetime import datetime
@@ -28,6 +28,7 @@ class TodoItem(BaseModel):
     tags: List[str] = []
     scheduled: Optional[str] = None
     deadline: Optional[str] = None
+    properties: Optional[Dict[str, str]] = None
     file_path: Optional[str] = None
 
 class CreateTodoRequest(BaseModel):
@@ -37,6 +38,7 @@ class CreateTodoRequest(BaseModel):
     tags: List[str] = []
     scheduled: Optional[str] = None
     deadline: Optional[str] = None
+    properties: Optional[Dict[str, str]] = None
     file_name: Optional[str] = None  # Which org file to add to
 
 class NoteRequest(BaseModel):
@@ -94,7 +96,8 @@ async def create_todo(todo: CreateTodoRequest):
             priority=todo.priority,
             tags=todo.tags,
             scheduled=todo.scheduled,
-            deadline=todo.deadline
+            deadline=todo.deadline,
+            properties=todo.properties
         )
         
         # Generate a simple ID based on timestamp
@@ -108,6 +111,7 @@ async def create_todo(todo: CreateTodoRequest):
             tags=todo.tags,
             scheduled=todo.scheduled,
             deadline=todo.deadline,
+            properties=todo.properties,
             file_path=file_path
         )
         
@@ -125,7 +129,8 @@ async def update_todo(todo_id: str, todo: CreateTodoRequest):
         priority=todo.priority,
         tags=todo.tags,
         scheduled=todo.scheduled,
-        deadline=todo.deadline
+        deadline=todo.deadline,
+        properties=todo.properties
     )
 
 @app.get("/agenda")

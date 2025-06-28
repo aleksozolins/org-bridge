@@ -14,7 +14,8 @@ def append_todo_to_file(
     priority: Optional[str] = None,
     tags: List[str] = None,
     scheduled: Optional[str] = None,
-    deadline: Optional[str] = None
+    deadline: Optional[str] = None,
+    properties: Optional[dict] = None
 ) -> str:
     """
     Append a TODO item to an org file.
@@ -27,6 +28,7 @@ def append_todo_to_file(
         tags: List of tags
         scheduled: Scheduled date (org format)
         deadline: Deadline date (org format)
+        properties: Dict of properties for properties drawer
     
     Returns:
         The TODO item text that was appended
@@ -60,6 +62,16 @@ def append_todo_to_file(
         additional_lines.append(f"  SCHEDULED: <{scheduled}>")
     elif deadline:
         additional_lines.append(f"  DEADLINE: <{deadline}>")
+    
+    # Add properties drawer if properties exist
+    if properties:
+        # Ensure property keys are uppercase (org-mode convention)
+        uppercased_properties = {k.upper(): v for k, v in properties.items()}
+        
+        additional_lines.append("  :PROPERTIES:")
+        for prop_name, prop_value in uppercased_properties.items():
+            additional_lines.append(f"  :{prop_name}: {prop_value}")
+        additional_lines.append("  :END:")
     
     # Combine everything
     todo_text = todo_line
