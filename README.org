@@ -10,7 +10,7 @@ A Zapier integration for Emacs org-mode files, enabling seamless integration bet
 [Zapier] ↔ [Python API Server] ↔ [Org Files] ↔ [Dropbox/Sync] ↔ [Emacs]
 #+END_EXAMPLE
 
-* 📁 Project Structure
+* Project Structure
 
 #+BEGIN_EXAMPLE
 org-bridge/
@@ -106,4 +106,4 @@ Once the server is running, visit http://localhost:8247/docs for interactive API
 
 * TODOS
 
-** TODO =use asdf= or something like that in =.envrc=?
+- [ ] =use asdf= or something like that in =.envrc=?
