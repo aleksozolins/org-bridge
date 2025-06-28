@@ -43,7 +43,9 @@ module.exports = {
   searches: {},
 
   // If you want your creates to show up, you better include it here!
-  creates: {},
+  creates: {
+    create_todo: require('./creates/create_todo'),
+  },
 
   resources: {},
 };
