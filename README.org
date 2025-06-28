@@ -4,7 +4,7 @@
 
 A Zapier integration for Emacs org-mode files, enabling seamless integration between your org-mode workflow and 5000+ apps via Zapier.
 
-* 🏗️ Architecture
+* Architecture
 
 #+BEGIN_EXAMPLE
 [Zapier] ↔ [Python API Server] ↔ [Org Files] ↔ [Dropbox/Sync] ↔ [Emacs]
@@ -28,7 +28,7 @@ org-bridge/
 └── README.org       # This file
 #+END_EXAMPLE
 
-* 🚀 Getting Started
+* Getting Started
 
 ** Prerequisites
 
@@ -64,7 +64,7 @@ pip install -r server/requirements.txt
 python server/main.py
 #+END_SRC
 
-* 💡 Features (Planned)
+* Features (Planned)
 
 - *TODO Management*: Create, update, and sync org-mode TODOs
 - *Agenda Integration*: Sync org agenda with calendars  
@@ -98,8 +98,12 @@ The Python virtual environment is managed automatically by =direnv=:
 
 Once the server is running, visit http://localhost:8247/docs for interactive API documentation.
 
-* 📚 Resources
+* Resources
 
 - [[https://github.com/zapier/zapier-platform/blob/main/packages/cli/README.md][Zapier Platform Documentation]]
 - [[https://orgmode.org/][Org-mode Official Site]]
-- [[https://protesilaos.com/emacs/denote][Denote Package by Prot]] 
+- [[https://protesilaos.com/emacs/denote][Denote Package by Prot]]
+
+* TODOS
+
+** TODO =use asdf= or something like that in =.envrc=?
