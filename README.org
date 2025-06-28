@@ -32,18 +32,12 @@ org-bridge/
 
 ** Prerequisites
 
-Install required tools:
+- =asdf= - for managing tool versions
+- =direnv= - for automatic environment management
 
 #+BEGIN_SRC bash
-# Install asdf, direnv if you haven't already
-brew install asdf direnv
-
-# Add direnv hook to your shell (if not done already)
-# For zsh: echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
-
 # Install project tool versions
-asdf install python 3.10.14
-asdf install nodejs 18.16.1
+asdf install
 #+END_SRC
 
 ** Environment Setup
@@ -65,15 +59,9 @@ direnv allow
 #+BEGIN_SRC bash
 # The virtual environment is already activated by direnv
 pip install -r server/requirements.txt
-cd server && python main.py
-#+END_SRC
 
-** Zapier App Setup (Node.js)
-
-#+BEGIN_SRC bash
-cd zapier-app
-npm install
-zapier test
+# Run the server (from project root)
+python server/main.py
 #+END_SRC
 
 * 💡 Features (Planned)
@@ -90,13 +78,14 @@ This project combines Python (server) and JavaScript (Zapier integration) to bri
 
 ** Environment Setup
 
-Copy the example environment file:
+The server uses environment variables for configuration. You can either:
+- Set them in your shell
+- Create =server/.env= file (loaded automatically by direnv)
 
-#+BEGIN_SRC bash
-cp server/.env.example server/.env
-#+END_SRC
-
-Edit =server/.env= to point to your org files directory.
+Key variables:
+- =ORG_FILES_DIR= - Path to your org files directory (default: =~/docs/org=)
+- =INBOX_FILENAME= - Inbox file name (default: =inbox.txt=)
+- =SERVER_PORT= - Server port (default: =8247=)
 
 ** Virtual Environment
 
@@ -107,7 +96,7 @@ The Python virtual environment is managed automatically by =direnv=:
 
 ** API Documentation
 
-Once the server is running, visit http://localhost:8000/docs for interactive API documentation.
+Once the server is running, visit http://localhost:8247/docs for interactive API documentation.
 
 * 📚 Resources
 
