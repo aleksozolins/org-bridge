@@ -1,0 +1,28 @@
+[Unit]
+Description=Org-Bridge API Server
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=aleksozolins
+Group=aleksozolins
+WorkingDirectory=/home/aleksozolins/code/org-bridge
+ExecStart=/home/aleksozolins/code/org-bridge/venv/bin/python server/main.py
+Restart=always
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables
+Environment=ORG_FILES_DIR=/home/aleksozolins/docs/org
+Environment=SERVER_HOST=0.0.0.0
+Environment=SERVER_PORT=8247
+Environment=PYTHONPATH=/home/aleksozolins/code/org-bridge/server
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target 

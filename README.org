@@ -98,6 +98,47 @@ The Python virtual environment is managed automatically by =direnv=:
 
 Once the server is running, visit http://localhost:8247/docs for interactive API documentation.
 
+* Production Deployment
+
+To run the server as a background service using systemd:
+
+** Setup systemd service
+
+#+BEGIN_SRC bash
+# Copy the service file
+sudo cp org-bridge.service /etc/systemd/system/
+
+# Reload systemd and enable the service
+sudo systemctl daemon-reload
+sudo systemctl enable org-bridge.service
+
+# Start the service
+sudo systemctl start org-bridge.service
+#+END_SRC
+
+** Service management
+
+#+BEGIN_SRC bash
+# Check service status
+sudo systemctl status org-bridge.service
+
+# View logs (follow mode)
+sudo journalctl -u org-bridge.service -f
+
+# Restart service
+sudo systemctl restart org-bridge.service
+
+# Stop service
+sudo systemctl stop org-bridge.service
+#+END_SRC
+
+The service will:
+- Auto-start on boot
+- Auto-restart on failure
+- Run as your user (not root)
+- Log to systemd journal
+- Use your existing virtual environment
+
 * Resources
 
 - [[https://github.com/zapier/zapier-platform/blob/main/packages/cli/README.md][Zapier Platform Documentation]]
