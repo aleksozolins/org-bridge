@@ -1,0 +1,116 @@
+#+TITLE: org-bridge
+#+AUTHOR: Your Name
+#+DATE: [2024-01-01]
+
+A Zapier integration for Emacs org-mode files, enabling seamless integration between your org-mode workflow and 5000+ apps via Zapier.
+
+* 🏗️ Architecture
+
+#+BEGIN_EXAMPLE
+[Zapier] ↔ [Python API Server] ↔ [Org Files] ↔ [Dropbox/Sync] ↔ [Emacs]
+#+END_EXAMPLE
+
+* 📁 Project Structure
+
+#+BEGIN_EXAMPLE
+org-bridge/
+├── server/           # Python FastAPI server
+│   ├── main.py      # API server entry point
+│   ├── org_parser.py # Org-mode file parsing
+│   └── requirements.txt
+├── zapier-app/       # Zapier integration
+│   ├── index.js     # Zapier app definition
+│   ├── package.json
+│   └── test/
+├── venv/            # Python virtual environment (auto-created)
+├── .tool-versions   # asdf version management
+├── .envrc           # direnv configuration
+└── README.org       # This file
+#+END_EXAMPLE
+
+* 🚀 Getting Started
+
+** Prerequisites
+
+Install required tools:
+
+#+BEGIN_SRC bash
+# Install asdf, direnv if you haven't already
+brew install asdf direnv
+
+# Add direnv hook to your shell (if not done already)
+# For zsh: echo 'eval "$(direnv hook zsh)"' >> ~/.zshrc
+
+# Install project tool versions
+asdf install python 3.10.14
+asdf install nodejs 18.16.1
+#+END_SRC
+
+** Environment Setup
+
+The project uses =direnv= for automatic environment management:
+
+#+BEGIN_SRC bash
+# Allow direnv to manage this directory
+direnv allow
+
+# This will automatically:
+# - Create a Python virtual environment (venv/)
+# - Activate it when you enter the directory
+# - Load environment variables from server/.env
+#+END_SRC
+
+** Server Setup (Python)
+
+#+BEGIN_SRC bash
+# The virtual environment is already activated by direnv
+pip install -r server/requirements.txt
+cd server && python main.py
+#+END_SRC
+
+** Zapier App Setup (Node.js)
+
+#+BEGIN_SRC bash
+cd zapier-app
+npm install
+zapier test
+#+END_SRC
+
+* 💡 Features (Planned)
+
+- *TODO Management*: Create, update, and sync org-mode TODOs
+- *Agenda Integration*: Sync org agenda with calendars  
+- *Denote-style Notes*: Create timestamped notes with proper naming
+- *Real-time Sync*: File watching with webhook triggers
+- *Multi-directional*: Zapier → Org and Org → Zapier workflows
+
+* 🔧 Development
+
+This project combines Python (server) and JavaScript (Zapier integration) to bridge the gap between org-mode and modern workflow tools.
+
+** Environment Setup
+
+Copy the example environment file:
+
+#+BEGIN_SRC bash
+cp server/.env.example server/.env
+#+END_SRC
+
+Edit =server/.env= to point to your org files directory.
+
+** Virtual Environment
+
+The Python virtual environment is managed automatically by =direnv=:
+- Created in =venv/= directory
+- Activated automatically when entering project directory
+- Deactivated when leaving project directory
+
+** API Documentation
+
+Once the server is running, visit http://localhost:8000/docs for interactive API documentation.
+
+* 📚 Resources
+
+- [[https://github.com/zapier/zapier-platform/blob/main/packages/cli/README.md][Zapier Platform Documentation]]
+- [[https://orgmode.org/][Org-mode Official Site]]
+- [[https://protesilaos.com/emacs/denote][Denote Package by Prot]] 
