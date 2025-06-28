@@ -3,6 +3,9 @@ from pydantic import BaseModel
 from typing import List, Optional
 import os
 from pathlib import Path
+from datetime import datetime
+
+from org_parser import append_todo_to_file, get_inbox_file_path, validate_org_directory
 
 app = FastAPI(
     title="Org-Bridge API",
@@ -11,7 +14,8 @@ app = FastAPI(
 )
 
 # Configuration
-ORG_FILES_DIR = os.getenv("ORG_FILES_DIR", str(Path.home() / "org"))
+ORG_FILES_DIR = os.getenv("ORG_FILES_DIR", str(Path.home() / "docs" / "org"))
+INBOX_FILENAME = os.getenv("INBOX_FILENAME", "inbox.txt")
 
 # Pydantic models
 class TodoItem(BaseModel):
@@ -43,7 +47,9 @@ async def root():
     return {
         "message": "Org-Bridge API Server",
         "version": "0.1.0",
-        "org_files_dir": ORG_FILES_DIR
+        "org_files_dir": ORG_FILES_DIR,
+        "inbox_file": get_inbox_file_path(ORG_FILES_DIR, INBOX_FILENAME),
+        "org_dir_exists": validate_org_directory(ORG_FILES_DIR)
     }
 
 @app.get("/health")
@@ -63,16 +69,48 @@ async def get_todos(
 @app.post("/todos", response_model=TodoItem)
 async def create_todo(todo: CreateTodoRequest):
     """Create a new TODO item in an org file"""
-    # TODO: Implement todo creation
-    return TodoItem(
-        id="placeholder",
-        title=todo.title,
-        state=todo.state,
-        priority=todo.priority,
-        tags=todo.tags,
-        scheduled=todo.scheduled,
-        deadline=todo.deadline
-    )
+    try:
+        # Determine which file to write to
+        if todo.file_name:
+            file_path = str(Path(ORG_FILES_DIR) / todo.file_name)
+        else:
+            # Default to inbox file
+            file_path = get_inbox_file_path(ORG_FILES_DIR, INBOX_FILENAME)
+        
+        # Validate org directory exists
+        if not validate_org_directory(ORG_FILES_DIR):
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Org files directory not found: {ORG_FILES_DIR}"
+            )
+        
+        # Append the TODO to the file
+        todo_text = append_todo_to_file(
+            file_path=file_path,
+            title=todo.title,
+            state=todo.state,
+            priority=todo.priority,
+            tags=todo.tags,
+            scheduled=todo.scheduled,
+            deadline=todo.deadline
+        )
+        
+        # Generate a simple ID based on timestamp
+        todo_id = f"todo_{int(datetime.now().timestamp())}"
+        
+        return TodoItem(
+            id=todo_id,
+            title=todo.title,
+            state=todo.state,
+            priority=todo.priority,
+            tags=todo.tags,
+            scheduled=todo.scheduled,
+            deadline=todo.deadline,
+            file_path=file_path
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to create TODO: {str(e)}")
 
 @app.put("/todos/{todo_id}", response_model=TodoItem)
 async def update_todo(todo_id: str, todo: CreateTodoRequest):
