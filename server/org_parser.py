@@ -13,7 +13,7 @@ def build_repeat_suffix(repeat_every: int, repeat_unit: str, repeat_type: str) -
     
     Args:
         repeat_every: Number of intervals (1, 2, 3, etc.)
-        repeat_unit: Unit type ("days", "weeks", "months", "years")
+        repeat_unit: Unit type ("hours", "days", "weeks", "months", "years")
         repeat_type: Type ("standard", "from_completion", "catch_up")
     
     Returns:
@@ -21,6 +21,7 @@ def build_repeat_suffix(repeat_every: int, repeat_unit: str, repeat_type: str) -
     """
     # Map units to org-mode abbreviations
     unit_map = {
+        "hours": "h",
         "days": "d",
         "weeks": "w", 
         "months": "m",
@@ -55,7 +56,7 @@ def format_org_timestamp(
         iso_datetime_str: ISO format datetime string or date string
         include_time: Whether to include time in the output
         repeat_every: Number for recurring pattern
-        repeat_unit: Unit for recurring pattern ("days", "weeks", "months", "years")
+        repeat_unit: Unit for recurring pattern ("hours", "days", "weeks", "months", "years")
         repeat_type: Type for recurring pattern ("standard", "from_completion", "catch_up")
     
     Returns:
@@ -112,7 +113,7 @@ def append_todo_to_file(
         is_recurring: Whether this TODO is recurring
         recurring_field: Which field to make recurring ("scheduled" or "deadline")
         repeat_every: Number for recurring pattern
-        repeat_unit: Unit for recurring pattern ("days", "weeks", "months", "years")
+        repeat_unit: Unit for recurring pattern ("hours", "days", "weeks", "months", "years")
         repeat_type: Type for recurring pattern ("standard", "from_completion", "catch_up")
         properties: Dict of properties for properties drawer
         body: Additional content/notes for the TODO

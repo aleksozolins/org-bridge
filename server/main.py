@@ -33,7 +33,7 @@ class TodoItem(BaseModel):
     is_recurring: Optional[bool] = False
     recurring_field: Optional[str] = None  # "scheduled" or "deadline"
     repeat_every: Optional[int] = None
-    repeat_unit: Optional[str] = None  # "days", "weeks", "months", "years"
+    repeat_unit: Optional[str] = None  # "hours", "days", "weeks", "months", "years"
     repeat_type: Optional[str] = None  # "standard", "from_completion", "catch_up"
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
@@ -51,7 +51,7 @@ class CreateTodoRequest(BaseModel):
     is_recurring: Optional[bool] = False
     recurring_field: Optional[str] = None  # "scheduled" or "deadline"
     repeat_every: Optional[int] = None
-    repeat_unit: Optional[str] = None  # "days", "weeks", "months", "years"
+    repeat_unit: Optional[str] = None  # "hours", "days", "weeks", "months", "years"
     repeat_type: Optional[str] = None  # "standard", "from_completion", "catch_up"
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
