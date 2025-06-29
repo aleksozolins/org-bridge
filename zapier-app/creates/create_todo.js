@@ -11,6 +11,11 @@ const perform = async (z, bundle) => {
     deadline: bundle.inputData.deadline,
     include_scheduled_time: bundle.inputData.include_scheduled_time || false,
     include_deadline_time: bundle.inputData.include_deadline_time || false,
+    is_recurring: bundle.inputData.is_recurring || false,
+    recurring_field: bundle.inputData.recurring_field,
+    repeat_every: bundle.inputData.repeat_every ? parseInt(bundle.inputData.repeat_every) : null,
+    repeat_unit: bundle.inputData.repeat_unit,
+    repeat_type: bundle.inputData.repeat_type,
     properties: bundle.inputData.properties,
     body: bundle.inputData.body,
     file_name: bundle.inputData.file_name
@@ -36,6 +41,28 @@ module.exports = {
     description: 'Creates a new TODO item in your org-mode files',
   },
   operation: {
+    sample: {
+      id: 'todo_1642712345',
+      title: 'Weekly team meeting',
+      state: 'TODO',
+      priority: 'B',
+      tags: ['work', 'meeting'],
+      scheduled: '2025-01-20T14:00:00',
+      deadline: null,
+      include_scheduled_time: true,
+      include_deadline_time: false,
+      is_recurring: true,
+      recurring_field: 'scheduled',
+      repeat_every: 1,
+      repeat_unit: 'weeks',
+      repeat_type: 'standard',
+      properties: {
+        'CATEGORY': 'work',
+        'EFFORT': '1:00'
+      },
+      body: 'Discuss weekly goals and blockers',
+      file_path: '/path/to/inbox.txt'
+    },
     inputFields: [
       {
         key: 'title',
@@ -90,6 +117,40 @@ module.exports = {
         type: 'boolean',
         default: 'false',
         helpText: 'Include the time component in the deadline timestamp'
+      },
+      {
+        key: 'is_recurring',
+        label: 'Make Recurring',
+        type: 'boolean',
+        default: 'false',
+        helpText: 'Enable recurring pattern for this TODO'
+      },
+      {
+        key: 'recurring_field',
+        label: 'Recurring Field',
+        type: 'string',
+        choices: ['scheduled', 'deadline'],
+        helpText: 'Which date field should have the recurring pattern applied (scheduled or deadline)'
+      },
+      {
+        key: 'repeat_every',
+        label: 'Repeat Every',
+        type: 'integer',
+        helpText: 'Number of intervals (e.g., 1 for every week, 2 for every 2 weeks)'
+      },
+      {
+        key: 'repeat_unit',
+        label: 'Repeat Unit',
+        type: 'string',
+        choices: ['hours', 'days', 'weeks', 'months', 'years'],
+        helpText: 'Time unit for recurring pattern. Examples: hours→h, days→d, weeks→w, months→m, years→y'
+      },
+      {
+        key: 'repeat_type',
+        label: 'Repeat Type',
+        type: 'string',
+        choices: ['standard', 'from_completion', 'catch_up'],
+        helpText: 'standard: +1w (fixed schedule), from_completion: .+1w (from when done), catch_up: ++1w (shows missed occurrences)'
       },
       {
         key: 'properties',
