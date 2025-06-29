@@ -96,61 +96,102 @@ module.exports = {
         key: 'scheduled',
         label: 'Scheduled Date & Time',
         type: 'datetime',
+        altersDynamicFields: true,
         helpText: 'When to schedule this TODO (date and optional time)'
       },
-      {
-        key: 'include_scheduled_time',
-        label: 'Include Scheduled Time',
-        type: 'boolean',
-        default: 'false',
-        helpText: 'Include the time component in the scheduled timestamp'
+      function (z, bundle) {
+        if (bundle.inputData.scheduled) {
+          return {
+            key: 'include_scheduled_time',
+            label: 'Include Scheduled Time',
+            type: 'boolean',
+            default: 'false',
+            helpText: 'Include the time component in the scheduled timestamp'
+          };
+        }
+        return [];
       },
       {
         key: 'deadline',
         label: 'Deadline Date & Time',
         type: 'datetime',
+        altersDynamicFields: true,
         helpText: 'Deadline for this TODO (date and optional time)'
       },
-      {
-        key: 'include_deadline_time',
-        label: 'Include Deadline Time',
-        type: 'boolean',
-        default: 'false',
-        helpText: 'Include the time component in the deadline timestamp'
+      function (z, bundle) {
+        if (bundle.inputData.deadline) {
+          return {
+            key: 'include_deadline_time',
+            label: 'Include Deadline Time',
+            type: 'boolean',
+            default: 'false',
+            helpText: 'Include the time component in the deadline timestamp'
+          };
+        }
+        return [];
       },
-      {
-        key: 'is_recurring',
-        label: 'Make Recurring',
-        type: 'boolean',
-        default: 'false',
-        helpText: 'Enable recurring pattern for this TODO'
+      function (z, bundle) {
+        if (bundle.inputData.scheduled || bundle.inputData.deadline) {
+          return {
+            key: 'is_recurring',
+            label: 'Make Recurring',
+            type: 'boolean',
+            default: 'false',
+            altersDynamicFields: true,
+            helpText: 'Enable recurring pattern for this TODO'
+          };
+        }
+        return [];
       },
-      {
-        key: 'recurring_field',
-        label: 'Recurring Field',
-        type: 'string',
-        choices: ['scheduled', 'deadline'],
-        helpText: 'Which date field should have the recurring pattern applied (scheduled or deadline)'
-      },
-      {
-        key: 'repeat_every',
-        label: 'Repeat Every',
-        type: 'integer',
-        helpText: 'Number of intervals (e.g., 1 for every week, 2 for every 2 weeks)'
-      },
-      {
-        key: 'repeat_unit',
-        label: 'Repeat Unit',
-        type: 'string',
-        choices: ['hours', 'days', 'weeks', 'months', 'years'],
-        helpText: 'Time unit for recurring pattern. Examples: hours→h, days→d, weeks→w, months→m, years→y'
-      },
-      {
-        key: 'repeat_type',
-        label: 'Repeat Type',
-        type: 'string',
-        choices: ['standard', 'from_completion', 'catch_up'],
-        helpText: 'standard: +1w (fixed schedule), from_completion: .+1w (from when done), catch_up: ++1w (shows missed occurrences)'
+      function (z, bundle) {
+        if (bundle.inputData.is_recurring === 'true' || bundle.inputData.is_recurring === true) {
+          const fields = [];
+          
+          // Build choices dynamically based on which date fields are set
+          const recurringChoices = [];
+          if (bundle.inputData.scheduled) recurringChoices.push('scheduled');
+          if (bundle.inputData.deadline) recurringChoices.push('deadline');
+          
+          if (recurringChoices.length > 0) {
+            fields.push({
+              key: 'recurring_field',
+              label: 'Recurring Field',
+              type: 'string',
+              choices: recurringChoices,
+              required: true,
+              helpText: 'Which date field should have the recurring pattern applied'
+            });
+          }
+          
+          fields.push(
+            {
+              key: 'repeat_every',
+              label: 'Repeat Every',
+              type: 'integer',
+              required: true,
+              helpText: 'Number of intervals (e.g., 1 for every week, 2 for every 2 weeks)'
+            },
+            {
+              key: 'repeat_unit',
+              label: 'Repeat Unit',
+              type: 'string',
+              choices: ['hours', 'days', 'weeks', 'months', 'years'],
+              required: true,
+              helpText: 'Time unit for recurring pattern. Examples: hours→h, days→d, weeks→w, months→m, years→y'
+            },
+            {
+              key: 'repeat_type',
+              label: 'Repeat Type',
+              type: 'string',
+              choices: ['standard', 'from_completion', 'catch_up'],
+              required: true,
+              helpText: 'standard: +1w (fixed schedule), from_completion: .+1w (from when done), catch_up: ++1w (shows missed occurrences)'
+            }
+          );
+          
+          return fields;
+        }
+        return [];
       },
       {
         key: 'properties',
