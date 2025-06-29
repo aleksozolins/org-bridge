@@ -2,9 +2,10 @@
 Org-mode file parsing and manipulation functions.
 """
 import os
+import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 
 def build_repeat_suffix(repeat_every: int, repeat_unit: str, repeat_type: str) -> str:
@@ -96,7 +97,7 @@ def append_todo_to_file(
     repeat_type: Optional[str] = None,
     properties: Optional[dict] = None,
     body: Optional[str] = None
-) -> str:
+):
     """
     Append a TODO item to an org file.
     
@@ -119,7 +120,7 @@ def append_todo_to_file(
         body: Additional content/notes for the TODO
     
     Returns:
-        The TODO item text that was appended
+        Tuple of (TODO item text that was appended, generated UUID)
     """
     tags = tags or []
     
@@ -177,15 +178,21 @@ def append_todo_to_file(
     elif deadline_timestamp:
         additional_lines.append(f"DEADLINE: {deadline_timestamp}")
     
-    # Add properties drawer if properties exist
-    if properties:
-        # Ensure property keys are uppercase (org-mode convention)
-        uppercased_properties = {k.upper(): v for k, v in properties.items()}
-        
-        additional_lines.append(":PROPERTIES:")
-        for prop_name, prop_value in uppercased_properties.items():
-            additional_lines.append(f":{prop_name}: {prop_value}")
-        additional_lines.append(":END:")
+    # Always add properties drawer with generated ID
+    if not properties:
+        properties = {}
+    
+    # Generate UUID for this TODO (following org-id convention)
+    generated_uuid = str(uuid.uuid4()).upper()
+    properties["ID"] = generated_uuid
+    
+    # Ensure property keys are uppercase (org-mode convention)
+    uppercased_properties = {k.upper(): v for k, v in properties.items()}
+    
+    additional_lines.append(":PROPERTIES:")
+    for prop_name, prop_value in uppercased_properties.items():
+        additional_lines.append(f":{prop_name}: {prop_value}")
+    additional_lines.append(":END:")
     
     # Combine everything
     todo_text = todo_line
@@ -206,7 +213,7 @@ def append_todo_to_file(
     with open(file_path_obj, "a", encoding="utf-8") as f:
         f.write(f"\n{todo_text}\n")
     
-    return todo_text
+    return todo_text, generated_uuid
 
 
 def get_inbox_file_path(org_dir: str, inbox_filename: str = "inbox.txt") -> str:

@@ -42,7 +42,7 @@ module.exports = {
   },
   operation: {
     sample: {
-      id: 'todo_1642712345',
+      id: 'FCD64514-6072-4C90-81A7-F726C299843D',
       title: 'Weekly team meeting',
       state: 'TODO',
       priority: 'B',

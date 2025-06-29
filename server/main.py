@@ -104,8 +104,8 @@ async def create_todo(todo: CreateTodoRequest):
                 detail=f"Org files directory not found: {ORG_FILES_DIR}"
             )
         
-        # Append the TODO to the file
-        todo_text = append_todo_to_file(
+        # Append the TODO to the file and get the generated UUID
+        todo_text, generated_uuid = append_todo_to_file(
             file_path=file_path,
             title=todo.title,
             state=todo.state,
@@ -124,8 +124,8 @@ async def create_todo(todo: CreateTodoRequest):
             body=todo.body
         )
         
-        # Generate a simple ID based on timestamp
-        todo_id = f"todo_{int(datetime.now().timestamp())}"
+        # Use the generated UUID as the TODO ID
+        todo_id = generated_uuid
         
         return TodoItem(
             id=todo_id,
