@@ -9,6 +9,8 @@ const perform = async (z, bundle) => {
     tags: bundle.inputData.tags ? bundle.inputData.tags.split(',').map(tag => tag.trim()) : [],
     scheduled: bundle.inputData.scheduled,
     deadline: bundle.inputData.deadline,
+    include_scheduled_time: bundle.inputData.include_scheduled_time || false,
+    include_deadline_time: bundle.inputData.include_deadline_time || false,
     properties: bundle.inputData.properties,
     body: bundle.inputData.body,
     file_name: bundle.inputData.file_name
@@ -65,15 +67,29 @@ module.exports = {
       },
       {
         key: 'scheduled',
-        label: 'Scheduled Date',
-        type: 'string',
-        helpText: 'When to schedule this TODO (YYYY-MM-DD format)'
+        label: 'Scheduled Date & Time',
+        type: 'datetime',
+        helpText: 'When to schedule this TODO (date and optional time)'
+      },
+      {
+        key: 'include_scheduled_time',
+        label: 'Include Scheduled Time',
+        type: 'boolean',
+        default: 'false',
+        helpText: 'Include the time component in the scheduled timestamp'
       },
       {
         key: 'deadline',
-        label: 'Deadline',
-        type: 'string',
-        helpText: 'Deadline for this TODO (YYYY-MM-DD format)'
+        label: 'Deadline Date & Time',
+        type: 'datetime',
+        helpText: 'Deadline for this TODO (date and optional time)'
+      },
+      {
+        key: 'include_deadline_time',
+        label: 'Include Deadline Time',
+        type: 'boolean',
+        default: 'false',
+        helpText: 'Include the time component in the deadline timestamp'
       },
       {
         key: 'properties',
