@@ -152,6 +152,9 @@ The service will:
 
 ** Development Environment
 - [ ] =use asdf= or something like that in =.envrc= needs to actually work
+- [ ] Placeholder data only in example systemd unit or env files
+- [ ] Option for deployment on a mac (without systemd?)
+- [ ] Containerize server for easy deployment?
 
 ** Enhanced Zapier Integration
 - [ ] Test error handling and possibly add =inputFormat= for validation
