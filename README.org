@@ -154,11 +154,11 @@ The service will:
 - [ ] =use asdf= or something like that in =.envrc= needs to actually work
 
 ** Enhanced Zapier Integration
-- [ ] Replace string date fields with =datetime= field types for better UX
-- [ ] Add time-of-day support for scheduling (=SCHEDULED: <2025-01-20 Mon 14:30>=)  
+- [X] Replace string date fields with =datetime= field types for better UX
+- [X] Add time-of-day support for scheduling (=SCHEDULED: <2025-01-20 Mon 14:30>=)  
 - [ ] Implement recurring TODO support with conditional fields (checkbox → interval + unit)
 - [ ] Support org-mode repeat syntax (=+1w=, =+2d=, =+1m=, etc.)
 - [ ] Support different repeat types: standard (=+=), completion-based (=.+=), and cumulative (=++=)
-- [ ] Add proper datetime conversion from Zapier's ISO format to org-mode format
+- [X] Add proper datetime conversion from Zapier's ISO format to org-mode format
 - [ ] Add heading-based filing: option to insert TODOs under specific org headings instead of EOF
 - [ ] (Much later) Dynamic file metadata: read TODO states and tags from target file to populate Zapier field choices
