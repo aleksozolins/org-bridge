@@ -147,4 +147,13 @@ The service will:
 
 * TODOS
 
+** Development Environment
 - [ ] =use asdf= or something like that in =.envrc=?
+
+** Enhanced Zapier Integration
+- [ ] Replace string date fields with =datetime= field types for better UX
+- [ ] Add time-of-day support for scheduling (=SCHEDULED: <2025-01-20 Mon 14:30>=)  
+- [ ] Implement recurring TODO support with conditional fields (checkbox → interval + unit)
+- [ ] Support org-mode repeat syntax (=+1w=, =+2d=, =+1m=, etc.)
+- [ ] Support different repeat types: standard (=+=), completion-based (=.+=), and cumulative (=++=)
+- [ ] Add proper datetime conversion from Zapier's ISO format to org-mode format
