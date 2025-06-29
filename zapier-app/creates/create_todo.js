@@ -31,7 +31,7 @@ const perform = async (z, bundle) => {
   });
 
   return response.data;
-};
+}
 
 module.exports = {
   key: 'create_todo',
@@ -69,7 +69,8 @@ module.exports = {
         label: 'TODO Title',
         type: 'string',
         required: true,
-        helpText: 'The title/description of the TODO item'
+        placeholder: 'Call client about project update',
+        helpText: 'The main description of what needs to be done. This will be the heading text in your org file.'
       },
       {
         key: 'state',
@@ -77,27 +78,29 @@ module.exports = {
         type: 'string',
         default: 'TODO',
         choices: ['TODO', 'NEXT', 'WAITING', 'DONE'],
-        helpText: 'The state of the TODO item'
+        helpText: 'The current state of this task. **TODO** = not started, **NEXT** = ready to work on, **WAITING** = blocked, **DONE** = completed.'
       },
       {
         key: 'priority',
         label: 'Priority',
         type: 'string',
         choices: ['A', 'B', 'C'],
-        helpText: 'Priority level (A=highest, C=lowest)'
+        helpText: 'Task priority level. **A** = highest/urgent, **B** = medium/important, **C** = low/someday. Leave blank for no priority.'
       },
       {
         key: 'tags',
         label: 'Tags',
         type: 'string',
-        helpText: 'Comma-separated tags (e.g., work, urgent, meeting)'
+        placeholder: 'work, urgent, meeting',
+        helpText: 'Comma-separated tags to categorize this TODO. These help with filtering and organization in org-mode.'
       },
       {
         key: 'scheduled',
         label: 'Scheduled Date & Time',
         type: 'datetime',
+        placeholder: 'When should this task be worked on?',
         altersDynamicFields: true,
-        helpText: 'When to schedule this TODO (date and optional time)'
+        helpText: 'When you plan to work on this task. In org-mode, this appears in your agenda on the scheduled date.'
       },
       function (z, bundle) {
         if (bundle.inputData.scheduled) {
@@ -106,7 +109,7 @@ module.exports = {
             label: 'Include Scheduled Time',
             type: 'boolean',
             default: 'false',
-            helpText: 'Include the time component in the scheduled timestamp'
+            helpText: 'Include the specific time in the scheduled timestamp. **True** = `<2025-01-20 14:30>`, **False** = `<2025-01-20>`'
           };
         }
         return [];
@@ -115,8 +118,9 @@ module.exports = {
         key: 'deadline',
         label: 'Deadline Date & Time',
         type: 'datetime',
+        placeholder: 'When must this be completed?',
         altersDynamicFields: true,
-        helpText: 'Deadline for this TODO (date and optional time)'
+        helpText: 'Hard deadline for this task. Org-mode will show warnings as the deadline approaches in your agenda.'
       },
       function (z, bundle) {
         if (bundle.inputData.deadline) {
@@ -125,7 +129,7 @@ module.exports = {
             label: 'Include Deadline Time',
             type: 'boolean',
             default: 'false',
-            helpText: 'Include the time component in the deadline timestamp'
+            helpText: 'Include the specific time in the deadline timestamp. **True** = `<2025-01-22 16:45>`, **False** = `<2025-01-22>`'
           };
         }
         return [];
@@ -138,7 +142,7 @@ module.exports = {
             type: 'boolean',
             default: 'false',
             altersDynamicFields: true,
-            helpText: 'Enable recurring pattern for this TODO'
+            helpText: 'Enable recurring pattern for this task. Perfect for habits, regular meetings, or recurring deadlines.'
           };
         }
         return [];
@@ -159,7 +163,7 @@ module.exports = {
               type: 'string',
               choices: recurringChoices,
               required: true,
-              helpText: 'Which date field should have the recurring pattern applied'
+              helpText: 'Which date should repeat? **Scheduled** = when to work on it, **Deadline** = when it\'s due.'
             });
           }
           
@@ -169,7 +173,8 @@ module.exports = {
               label: 'Repeat Every',
               type: 'integer',
               required: true,
-              helpText: 'Number of intervals (e.g., 1 for every week, 2 for every 2 weeks)'
+              placeholder: '1',
+              helpText: 'How many intervals between repeats? **1** = every week, **2** = every 2 weeks, **6** = every 6 hours.'
             },
             {
               key: 'repeat_unit',
@@ -177,7 +182,7 @@ module.exports = {
               type: 'string',
               choices: ['hours', 'days', 'weeks', 'months', 'years'],
               required: true,
-              helpText: 'Time unit for recurring pattern. Examples: hours→h, days→d, weeks→w, months→m, years→y'
+              helpText: 'Time unit for recurring pattern. Creates org-mode syntax: **hours** → `h`, **days** → `d`, **weeks** → `w`, **months** → `m`, **years** → `y`'
             },
             {
               key: 'repeat_type',
@@ -185,7 +190,7 @@ module.exports = {
               type: 'string',
               choices: ['standard', 'from_completion', 'catch_up'],
               required: true,
-              helpText: 'standard: +1w (fixed schedule), from_completion: .+1w (from when done), catch_up: ++1w (shows missed occurrences)'
+              helpText: 'How repeating works: **standard** = `+1w` (fixed schedule), **from_completion** = `.+1w` (from when you finish), **catch_up** = `++1w` (shows all missed occurrences)'
             }
           );
           
@@ -198,19 +203,22 @@ module.exports = {
         label: 'Properties',
         type: 'string',
         dict: true,
-        helpText: 'Key-value pairs for org-mode properties drawer (e.g., FROM: email, PROJECT: work)'
+        placeholder: 'CATEGORY: work, EFFORT: 2:00',
+        helpText: '**Key-value pairs** for org-mode properties drawer (e.g., `CATEGORY: work`, `PROJECT: website`). **Note:** A unique `ID` property will be automatically generated for every TODO.'
       },
       {
         key: 'body',
         label: 'Body/Notes',
         type: 'text',
-        helpText: 'Additional content, notes, or details for this TODO'
+        placeholder: 'Additional details, meeting agenda, project requirements...',
+        helpText: 'Additional content, notes, or details for this TODO. This text will appear below the heading in your org file.'
       },
       {
         key: 'file_name',
-        label: 'File Name',
+        label: 'Org File',
         type: 'string',
-        helpText: 'Which org file to add to (leave blank for inbox.txt)'
+        placeholder: 'projects.org',
+        helpText: 'Which org file to add this TODO to. Leave blank to use your default inbox file. Include the `.org` extension.'
       }
     ],
     perform,
