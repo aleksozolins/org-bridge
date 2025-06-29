@@ -30,6 +30,11 @@ class TodoItem(BaseModel):
     deadline: Optional[str] = None   # ISO datetime string
     include_scheduled_time: Optional[bool] = False
     include_deadline_time: Optional[bool] = False
+    is_recurring: Optional[bool] = False
+    recurring_field: Optional[str] = None  # "scheduled" or "deadline"
+    repeat_every: Optional[int] = None
+    repeat_unit: Optional[str] = None  # "days", "weeks", "months", "years"
+    repeat_type: Optional[str] = None  # "standard", "from_completion", "catch_up"
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_path: Optional[str] = None
@@ -43,6 +48,11 @@ class CreateTodoRequest(BaseModel):
     deadline: Optional[str] = None   # ISO datetime string
     include_scheduled_time: Optional[bool] = False
     include_deadline_time: Optional[bool] = False
+    is_recurring: Optional[bool] = False
+    recurring_field: Optional[str] = None  # "scheduled" or "deadline"
+    repeat_every: Optional[int] = None
+    repeat_unit: Optional[str] = None  # "days", "weeks", "months", "years"
+    repeat_type: Optional[str] = None  # "standard", "from_completion", "catch_up"
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_name: Optional[str] = None  # Which org file to add to
@@ -105,6 +115,11 @@ async def create_todo(todo: CreateTodoRequest):
             deadline=todo.deadline,
             include_scheduled_time=todo.include_scheduled_time or False,
             include_deadline_time=todo.include_deadline_time or False,
+            is_recurring=todo.is_recurring or False,
+            recurring_field=todo.recurring_field,
+            repeat_every=todo.repeat_every,
+            repeat_unit=todo.repeat_unit,
+            repeat_type=todo.repeat_type,
             properties=todo.properties,
             body=todo.body
         )
@@ -122,6 +137,11 @@ async def create_todo(todo: CreateTodoRequest):
             deadline=todo.deadline,
             include_scheduled_time=todo.include_scheduled_time,
             include_deadline_time=todo.include_deadline_time,
+            is_recurring=todo.is_recurring,
+            recurring_field=todo.recurring_field,
+            repeat_every=todo.repeat_every,
+            repeat_unit=todo.repeat_unit,
+            repeat_type=todo.repeat_type,
             properties=todo.properties,
             body=todo.body,
             file_path=file_path
@@ -144,6 +164,11 @@ async def update_todo(todo_id: str, todo: CreateTodoRequest):
         deadline=todo.deadline,
         include_scheduled_time=todo.include_scheduled_time,
         include_deadline_time=todo.include_deadline_time,
+        is_recurring=todo.is_recurring,
+        recurring_field=todo.recurring_field,
+        repeat_every=todo.repeat_every,
+        repeat_unit=todo.repeat_unit,
+        repeat_type=todo.repeat_type,
         properties=todo.properties,
         body=todo.body
     )
