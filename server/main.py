@@ -26,8 +26,10 @@ class TodoItem(BaseModel):
     state: str = "TODO"  # TODO, DONE, etc.
     priority: Optional[str] = None  # A, B, C
     tags: List[str] = []
-    scheduled: Optional[str] = None
-    deadline: Optional[str] = None
+    scheduled: Optional[str] = None  # ISO datetime string
+    deadline: Optional[str] = None   # ISO datetime string
+    include_scheduled_time: Optional[bool] = False
+    include_deadline_time: Optional[bool] = False
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_path: Optional[str] = None
@@ -37,8 +39,10 @@ class CreateTodoRequest(BaseModel):
     state: str = "TODO"
     priority: Optional[str] = None
     tags: List[str] = []
-    scheduled: Optional[str] = None
-    deadline: Optional[str] = None
+    scheduled: Optional[str] = None  # ISO datetime string
+    deadline: Optional[str] = None   # ISO datetime string
+    include_scheduled_time: Optional[bool] = False
+    include_deadline_time: Optional[bool] = False
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_name: Optional[str] = None  # Which org file to add to
@@ -99,6 +103,8 @@ async def create_todo(todo: CreateTodoRequest):
             tags=todo.tags,
             scheduled=todo.scheduled,
             deadline=todo.deadline,
+            include_scheduled_time=todo.include_scheduled_time or False,
+            include_deadline_time=todo.include_deadline_time or False,
             properties=todo.properties,
             body=todo.body
         )
@@ -114,6 +120,8 @@ async def create_todo(todo: CreateTodoRequest):
             tags=todo.tags,
             scheduled=todo.scheduled,
             deadline=todo.deadline,
+            include_scheduled_time=todo.include_scheduled_time,
+            include_deadline_time=todo.include_deadline_time,
             properties=todo.properties,
             body=todo.body,
             file_path=file_path
@@ -134,6 +142,8 @@ async def update_todo(todo_id: str, todo: CreateTodoRequest):
         tags=todo.tags,
         scheduled=todo.scheduled,
         deadline=todo.deadline,
+        include_scheduled_time=todo.include_scheduled_time,
+        include_deadline_time=todo.include_deadline_time,
         properties=todo.properties,
         body=todo.body
     )

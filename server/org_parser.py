@@ -7,6 +7,27 @@ from pathlib import Path
 from typing import Optional, List
 
 
+def format_org_timestamp(iso_datetime_str: str, include_time: bool = False) -> str:
+    """
+    Convert ISO datetime string to org-mode timestamp format.
+    Ignores timezone info and uses date/time as-is.
+    
+    Args:
+        iso_datetime_str: ISO format datetime string or date string
+        include_time: Whether to include time in the output
+    
+    Returns:
+        Org-mode timestamp string like '<2025-01-20>' or '<2025-01-20 14:30>'
+    """
+    # Parse ISO string but ignore timezone
+    dt = datetime.fromisoformat(iso_datetime_str.replace('Z', '+00:00'))
+    
+    if include_time:
+        return f"<{dt.strftime('%Y-%m-%d %H:%M')}>"
+    else:
+        return f"<{dt.strftime('%Y-%m-%d')}>"
+
+
 def append_todo_to_file(
     file_path: str,
     title: str,
@@ -15,6 +36,8 @@ def append_todo_to_file(
     tags: List[str] = None,
     scheduled: Optional[str] = None,
     deadline: Optional[str] = None,
+    include_scheduled_time: bool = False,
+    include_deadline_time: bool = False,
     properties: Optional[dict] = None,
     body: Optional[str] = None
 ) -> str:
@@ -27,8 +50,10 @@ def append_todo_to_file(
         state: TODO state (TODO, DONE, etc.)
         priority: Priority level (A, B, C)
         tags: List of tags
-        scheduled: Scheduled date (org format)
-        deadline: Deadline date (org format)
+        scheduled: Scheduled date (ISO datetime string)
+        deadline: Deadline date (ISO datetime string)
+        include_scheduled_time: Whether to include time in scheduled timestamp
+        include_deadline_time: Whether to include time in deadline timestamp
         properties: Dict of properties for properties drawer
         body: Additional content/notes for the TODO
     
@@ -57,13 +82,23 @@ def append_todo_to_file(
     # Add scheduling/deadline info
     additional_lines = []
     
+    # Format timestamps
+    scheduled_timestamp = None
+    deadline_timestamp = None
+    
+    if scheduled:
+        scheduled_timestamp = format_org_timestamp(scheduled, include_scheduled_time)
+    
+    if deadline:
+        deadline_timestamp = format_org_timestamp(deadline, include_deadline_time)
+    
     # If both scheduled and deadline exist, put them on the same line
-    if scheduled and deadline:
-        additional_lines.append(f"SCHEDULED: <{scheduled}> DEADLINE: <{deadline}>")
-    elif scheduled:
-        additional_lines.append(f"SCHEDULED: <{scheduled}>")
-    elif deadline:
-        additional_lines.append(f"DEADLINE: <{deadline}>")
+    if scheduled_timestamp and deadline_timestamp:
+        additional_lines.append(f"SCHEDULED: {scheduled_timestamp} DEADLINE: {deadline_timestamp}")
+    elif scheduled_timestamp:
+        additional_lines.append(f"SCHEDULED: {scheduled_timestamp}")
+    elif deadline_timestamp:
+        additional_lines.append(f"DEADLINE: {deadline_timestamp}")
     
     # Add properties drawer if properties exist
     if properties:
