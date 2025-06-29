@@ -9,6 +9,8 @@ const perform = async (z, bundle) => {
     tags: bundle.inputData.tags ? bundle.inputData.tags.split(',').map(tag => tag.trim()) : [],
     scheduled: bundle.inputData.scheduled,
     deadline: bundle.inputData.deadline,
+    properties: bundle.inputData.properties,
+    body: bundle.inputData.body,
     file_name: bundle.inputData.file_name
   };
 
@@ -72,6 +74,19 @@ module.exports = {
         label: 'Deadline',
         type: 'string',
         helpText: 'Deadline for this TODO (YYYY-MM-DD format)'
+      },
+      {
+        key: 'properties',
+        label: 'Properties',
+        type: 'string',
+        dict: true,
+        helpText: 'Key-value pairs for org-mode properties drawer (e.g., FROM: email, PROJECT: work)'
+      },
+      {
+        key: 'body',
+        label: 'Body/Notes',
+        type: 'text',
+        helpText: 'Additional content, notes, or details for this TODO'
       },
       {
         key: 'file_name',
