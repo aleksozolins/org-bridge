@@ -18,7 +18,8 @@ const perform = async (z, bundle) => {
     repeat_type: bundle.inputData.repeat_type,
     properties: bundle.inputData.properties,
     body: bundle.inputData.body,
-    file_name: bundle.inputData.file_name
+    file_name: bundle.inputData.file_name,
+    heading: bundle.inputData.heading
   };
 
   const response = await z.request({
@@ -61,9 +62,24 @@ module.exports = {
         'EFFORT': '1:00'
       },
       body: 'Discuss weekly goals and blockers',
-      file_path: '/path/to/inbox.txt'
+      file_path: '/path/to/inbox.txt',
+      heading: 'Work Projects'
     },
     inputFields: [
+      {
+        key: 'file_name',
+        label: 'Org File',
+        type: 'string',
+        placeholder: 'projects.org',
+        helpText: 'Which org file to add this TODO to. Leave blank to use your default inbox file. Include the `.org` extension.'
+      },
+      {
+        key: 'heading',
+        label: 'Heading',
+        type: 'string',
+        placeholder: 'Zapier',
+        helpText: 'Which heading to file this TODO under. Must match exactly (case-sensitive, ignoring tags). If heading doesn\'t exist, it will be created as a top-level heading.'
+      },
       {
         key: 'title',
         label: 'TODO Title',
@@ -212,13 +228,6 @@ module.exports = {
         type: 'text',
         placeholder: 'Additional details, meeting agenda, project requirements...',
         helpText: 'Additional content, notes, or details for this TODO. This text will appear below the heading in your org file.'
-      },
-      {
-        key: 'file_name',
-        label: 'Org File',
-        type: 'string',
-        placeholder: 'projects.org',
-        helpText: 'Which org file to add this TODO to. Leave blank to use your default inbox file. Include the `.org` extension.'
       }
     ],
     perform,
