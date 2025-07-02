@@ -38,6 +38,7 @@ class TodoItem(BaseModel):
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_path: Optional[str] = None
+    heading: Optional[str] = None  # Heading under which to file the TODO
 
 class CreateTodoRequest(BaseModel):
     title: str
@@ -56,6 +57,7 @@ class CreateTodoRequest(BaseModel):
     properties: Optional[Dict[str, str]] = None
     body: Optional[str] = None
     file_name: Optional[str] = None  # Which org file to add to
+    heading: Optional[str] = None  # Heading under which to file the TODO
 
 class NoteRequest(BaseModel):
     title: str
@@ -121,7 +123,8 @@ async def create_todo(todo: CreateTodoRequest):
             repeat_unit=todo.repeat_unit,
             repeat_type=todo.repeat_type,
             properties=todo.properties,
-            body=todo.body
+            body=todo.body,
+            heading=todo.heading
         )
         
         # Use the generated UUID as the TODO ID
@@ -144,7 +147,8 @@ async def create_todo(todo: CreateTodoRequest):
             repeat_type=todo.repeat_type,
             properties=todo.properties,
             body=todo.body,
-            file_path=file_path
+            file_path=file_path,
+            heading=todo.heading
         )
         
     except Exception as e:

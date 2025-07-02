@@ -80,6 +80,64 @@ def format_org_timestamp(
     return f"<{timestamp}>"
 
 
+def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optional[int]:
+    """
+    Find the insertion point for a TODO under a specific heading.
+    
+    Args:
+        lines: List of file lines
+        target_heading: The heading text to search for (without the * prefix)
+    
+    Returns:
+        Line index where the TODO should be inserted, or None if heading not found
+    """
+    target_heading = target_heading.strip()
+    
+    for i, line in enumerate(lines):
+        line = line.strip()
+        
+        # Check if this line is a heading that matches our target
+        if line.startswith('*') and line.count('*') >= 1:
+            # Extract heading text (remove * and any tags)
+            heading_text = line.lstrip('*').strip()
+            
+            # Remove tags if present (anything after the last space that contains :)
+            if ':' in heading_text and heading_text.endswith(':'):
+                # Find the last space before tags
+                words = heading_text.split()
+                for j in range(len(words) - 1, -1, -1):
+                    if ':' not in words[j]:
+                        heading_text = ' '.join(words[:j+1])
+                        break
+                else:
+                    # All words contain :, so it's just tags
+                    continue
+            
+            # Check if this heading matches our target
+            if heading_text.lower() == target_heading.lower():
+                # Found the heading! Now find where to insert the TODO
+                heading_level = line.count('*')
+                
+                # Look for the end of this heading's content
+                # We want to insert before any subheading or next heading of same/higher level
+                for j in range(i + 1, len(lines)):
+                    next_line = lines[j].strip()
+                    
+                    # If we find another heading, check its level
+                    if next_line.startswith('*'):
+                        next_heading_level = next_line.count('*')
+                        
+                        # If it's same level or higher (fewer *), insert before it
+                        if next_heading_level <= heading_level:
+                            return j
+                
+                # If we reach here, insert at the end of the file
+                return len(lines)
+    
+    # Heading not found
+    return None
+
+
 def append_todo_to_file(
     file_path: str,
     title: str,
@@ -96,7 +154,8 @@ def append_todo_to_file(
     repeat_unit: Optional[str] = None,
     repeat_type: Optional[str] = None,
     properties: Optional[dict] = None,
-    body: Optional[str] = None
+    body: Optional[str] = None,
+    heading: Optional[str] = None
 ):
     """
     Append a TODO item to an org file.
@@ -118,6 +177,7 @@ def append_todo_to_file(
         repeat_type: Type for recurring pattern ("standard", "from_completion", "catch_up")
         properties: Dict of properties for properties drawer
         body: Additional content/notes for the TODO
+        heading: The heading under which the TODO should be filed
     
     Returns:
         Tuple of (TODO item text that was appended, generated UUID)
@@ -203,15 +263,48 @@ def append_todo_to_file(
     if body:
         todo_text += "\n\n" + body.strip()
     
-    # Append to file
+    # Prepare file path
     file_path_obj = Path(file_path)
     
     # Create directory if it doesn't exist
     file_path_obj.parent.mkdir(parents=True, exist_ok=True)
     
-    # Append the TODO (with newlines for proper formatting)
-    with open(file_path_obj, "a", encoding="utf-8") as f:
-        f.write(f"\n{todo_text}\n")
+    # Handle heading-based filing vs. simple append
+    if heading:
+        # Read the entire file to find the heading
+        if file_path_obj.exists():
+            with open(file_path_obj, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+        else:
+            lines = []
+        
+        # Find the target heading and insertion point
+        insertion_point = find_heading_insertion_point(lines, heading)
+        
+        if insertion_point is not None:
+            # Insert the TODO under the found heading
+            todo_lines = todo_text.split('\n')
+            
+            # Insert with proper spacing
+            lines.insert(insertion_point, '\n')
+            for i, line in enumerate(todo_lines):
+                lines.insert(insertion_point + 1 + i, line + '\n')
+            lines.insert(insertion_point + 1 + len(todo_lines), '\n')
+            
+            # Write the modified content back to file
+            with open(file_path_obj, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+        else:
+            # Heading not found, create it and add the TODO under it
+            heading_text = f"* {heading}\n\n{todo_text}\n"
+            
+            # Append the new heading and TODO to file
+            with open(file_path_obj, "a", encoding="utf-8") as f:
+                f.write(f"\n{heading_text}")
+    else:
+        # No heading specified, append to end of file (original behavior)
+        with open(file_path_obj, "a", encoding="utf-8") as f:
+            f.write(f"\n{todo_text}\n")
     
     return todo_text, generated_uuid
 
