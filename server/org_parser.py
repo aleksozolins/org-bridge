@@ -313,13 +313,41 @@ def append_todo_to_file(
             if body:
                 corrected_todo_text += "\n\n" + body.strip()
             
-            # Insert the TODO under the found heading with proper spacing (single blank line)
+            # Insert the TODO under the found heading with proper spacing
             todo_lines = corrected_todo_text.split('\n')
             
-            # Insert with single blank line spacing
-            lines.insert(insertion_point, '\n')
+            # Handle proper spacing - ensure exactly one blank line before and after TODO
+            
+            # Check if we need a blank line before the TODO
+            need_blank_before = True
+            if insertion_point > 0:
+                prev_line = lines[insertion_point - 1].strip()
+                if prev_line == '':
+                    need_blank_before = False
+            
+            # Check if we need a blank line after the TODO  
+            need_blank_after = True
+            if insertion_point < len(lines):
+                next_line = lines[insertion_point].strip()
+                if next_line == '':
+                    need_blank_after = False
+            
+            # Insert the TODO with proper spacing
+            offset = 0
+            
+            # Add blank line before if needed
+            if need_blank_before:
+                lines.insert(insertion_point + offset, '\n')
+                offset += 1
+            
+            # Insert the TODO lines
             for i, line in enumerate(todo_lines):
-                lines.insert(insertion_point + 1 + i, line + '\n')
+                lines.insert(insertion_point + offset + i, line + '\n')
+            offset += len(todo_lines)
+            
+            # Add blank line after if needed
+            if need_blank_after:
+                lines.insert(insertion_point + offset, '\n')
             
             # Write the modified content back to file
             with open(file_path_obj, "w", encoding="utf-8") as f:
@@ -353,8 +381,34 @@ def append_todo_to_file(
                 f.write(f"\n{heading_text}\n")
     else:
         # No heading specified, append to end of file (original behavior)
-        with open(file_path_obj, "a", encoding="utf-8") as f:
-            f.write(f"\n{todo_text}\n")
+        # Use smart spacing logic similar to heading insertion
+        if file_path_obj.exists():
+            with open(file_path_obj, "r", encoding="utf-8") as f:
+                existing_content = f.read()
+            
+            # Check if file ends with content or blank lines
+            if existing_content.strip():  # File has content
+                # Check if file already ends with newline(s)
+                if existing_content.endswith('\n\n'):
+                    # Already has blank line at end, just add TODO
+                    with open(file_path_obj, "a", encoding="utf-8") as f:
+                        f.write(f"{todo_text}\n")
+                elif existing_content.endswith('\n'):
+                    # Ends with single newline, add blank line then TODO
+                    with open(file_path_obj, "a", encoding="utf-8") as f:
+                        f.write(f"\n{todo_text}\n")
+                else:
+                    # Doesn't end with newline, add newline + blank line + TODO
+                    with open(file_path_obj, "a", encoding="utf-8") as f:
+                        f.write(f"\n\n{todo_text}\n")
+            else:
+                # Empty file, just add TODO
+                with open(file_path_obj, "w", encoding="utf-8") as f:
+                    f.write(f"{todo_text}\n")
+        else:
+            # File doesn't exist, create it with TODO
+            with open(file_path_obj, "w", encoding="utf-8") as f:
+                f.write(f"{todo_text}\n")
     
     return todo_text, generated_uuid
 
