@@ -158,7 +158,7 @@ The service will:
 
 ** Enhanced Zapier Integration
 - [ ] Test error handling and possibly add =inputFormat= for validation
-- [ ] Add heading-based filing: option to insert TODOs under specific org headings instead of EOF
+- [X] Add heading-based filing: option to insert TODOs under specific org headings instead of EOF
   - Add `heading` parameter to `CreateTodoRequest` model
   - TODO level = heading level + 1 (if heading is `*`, TODO becomes `**`)
   - Insert before next same-level heading (not immediately after target heading)
