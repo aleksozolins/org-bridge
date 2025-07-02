@@ -80,7 +80,7 @@ def format_org_timestamp(
     return f"<{timestamp}>"
 
 
-def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optional[int]:
+def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optional[Tuple[int, int]]:
     """
     Find the insertion point for a TODO under a specific heading.
     
@@ -89,7 +89,7 @@ def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optio
         target_heading: The heading text to search for (without the * prefix)
     
     Returns:
-        Line index where the TODO should be inserted, or None if heading not found
+        Tuple of (line index where TODO should be inserted, heading level) or None if heading not found
     """
     target_heading = target_heading.strip()
     
@@ -129,10 +129,10 @@ def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optio
                         
                         # If it's same level or higher (fewer *), insert before it
                         if next_heading_level <= heading_level:
-                            return j
+                            return j, heading_level
                 
                 # If we reach here, insert at the end of the file
-                return len(lines)
+                return len(lines), heading_level
     
     # Heading not found
     return None
@@ -279,28 +279,78 @@ def append_todo_to_file(
             lines = []
         
         # Find the target heading and insertion point
-        insertion_point = find_heading_insertion_point(lines, heading)
+        result = find_heading_insertion_point(lines, heading)
         
-        if insertion_point is not None:
-            # Insert the TODO under the found heading
-            todo_lines = todo_text.split('\n')
+        if result is not None:
+            insertion_point, heading_level = result
             
-            # Insert with proper spacing
+            # Create TODO at one level deeper than the parent heading
+            todo_level = "*" * (heading_level + 1)
+            
+            # Rebuild TODO with correct level
+            todo_parts = [f"{todo_level} {state}"]
+            
+            # Add priority
+            if priority:
+                todo_parts.append(f"[#{priority}]")
+            
+            # Add title
+            todo_parts.append(title)
+            
+            # Add tags
+            if tags:
+                tag_string = ":" + ":".join(tags) + ":"
+                todo_parts.append(tag_string)
+            
+            corrected_todo_line = " ".join(todo_parts)
+            
+            # Rebuild the complete TODO text with correct heading level
+            corrected_todo_text = corrected_todo_line
+            if additional_lines:
+                corrected_todo_text += "\n" + "\n".join(additional_lines)
+            
+            # Add body if provided (separated by blank line)
+            if body:
+                corrected_todo_text += "\n\n" + body.strip()
+            
+            # Insert the TODO under the found heading with proper spacing (single blank line)
+            todo_lines = corrected_todo_text.split('\n')
+            
+            # Insert with single blank line spacing
             lines.insert(insertion_point, '\n')
             for i, line in enumerate(todo_lines):
                 lines.insert(insertion_point + 1 + i, line + '\n')
-            lines.insert(insertion_point + 1 + len(todo_lines), '\n')
             
             # Write the modified content back to file
             with open(file_path_obj, "w", encoding="utf-8") as f:
                 f.writelines(lines)
         else:
-            # Heading not found, create it and add the TODO under it
-            heading_text = f"* {heading}\n\n{todo_text}\n"
+            # Heading not found, create it and add the TODO under it (TODO as level 2)
+            heading_text = f"* {heading}\n\n** {state}"
+            
+            # Add priority to the TODO
+            if priority:
+                heading_text += f" [#{priority}]"
+            
+            # Add title
+            heading_text += f" {title}"
+            
+            # Add tags
+            if tags:
+                tag_string = ":" + ":".join(tags) + ":"
+                heading_text += f" {tag_string}"
+            
+            # Add the rest of the TODO content
+            if additional_lines:
+                heading_text += "\n" + "\n".join(additional_lines)
+            
+            # Add body if provided
+            if body:
+                heading_text += "\n\n" + body.strip()
             
             # Append the new heading and TODO to file
             with open(file_path_obj, "a", encoding="utf-8") as f:
-                f.write(f"\n{heading_text}")
+                f.write(f"\n{heading_text}\n")
     else:
         # No heading specified, append to end of file (original behavior)
         with open(file_path_obj, "a", encoding="utf-8") as f:
