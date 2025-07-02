@@ -70,7 +70,7 @@ module.exports = {
         key: 'file_name',
         label: 'Org File',
         type: 'string',
-        placeholder: 'projects.org',
+        placeholder: 'inbox.org',
         helpText: 'Which org file to add this TODO to. Leave blank to use your default inbox file. Include the `.org` extension.'
       },
       {
@@ -107,14 +107,14 @@ module.exports = {
         key: 'tags',
         label: 'Tags',
         type: 'string',
-        placeholder: 'work, urgent, meeting',
+        placeholder: '@work, urgent, meeting',
         helpText: 'Comma-separated tags to categorize this TODO. These help with filtering and organization in org-mode.'
       },
       {
         key: 'scheduled',
         label: 'Scheduled Date & Time',
         type: 'datetime',
-        placeholder: 'When should this task be worked on?',
+        placeholder: 'today 2pm',
         altersDynamicFields: true,
         helpText: 'When you plan to work on this task. In org-mode, this appears in your agenda on the scheduled date.'
       },
@@ -134,7 +134,7 @@ module.exports = {
         key: 'deadline',
         label: 'Deadline Date & Time',
         type: 'datetime',
-        placeholder: 'When must this be completed?',
+        placeholder: 'tomorrow 8am',
         altersDynamicFields: true,
         helpText: 'Hard deadline for this task. Org-mode will show warnings as the deadline approaches in your agenda.'
       },
@@ -219,7 +219,6 @@ module.exports = {
         label: 'Properties',
         type: 'string',
         dict: true,
-        placeholder: 'CATEGORY: work, EFFORT: 2:00',
         helpText: '**Key-value pairs** for org-mode properties drawer (e.g., `CATEGORY: work`, `PROJECT: website`). **Note:** A unique `ID` property will be automatically generated for every TODO.'
       },
       {
