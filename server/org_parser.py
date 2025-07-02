@@ -114,7 +114,7 @@ def find_heading_insertion_point(lines: List[str], target_heading: str) -> Optio
                     continue
             
             # Check if this heading matches our target
-            if heading_text.lower() == target_heading.lower():
+            if heading_text == target_heading:
                 # Found the heading! Now find where to insert the TODO
                 heading_level = line.count('*')
                 
