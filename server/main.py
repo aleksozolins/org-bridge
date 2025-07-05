@@ -15,7 +15,7 @@ app = FastAPI(
 
 # Configuration
 ORG_FILES_DIR = os.getenv("ORG_FILES_DIR", str(Path.home() / "docs" / "org"))
-INBOX_FILENAME = os.getenv("INBOX_FILENAME", "inbox.txt")
+INBOX_FILENAME = os.getenv("INBOX_FILENAME", "inbox.org")
 SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8247"))
 
