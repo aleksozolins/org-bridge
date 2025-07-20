@@ -1,7 +1,7 @@
 {
   "name": "org-bridge",
   "version": "1.0.0",
-  "description": "",
+  "description": "Zapier integration for org-bridge - create TODOs in org-mode files from 8000+ apps",
   "scripts": {
     "test": "jest --testTimeout 10000"
   },

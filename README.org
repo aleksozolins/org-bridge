@@ -30,6 +30,7 @@ org-bridge/
 ├── venv/            # Python virtual environment (auto-created)
 ├── .tool-versions   # asdf version management
 ├── .envrc           # direnv configuration
+├── LICENSE          # MIT license
 └── README.org       # This file
 #+END_EXAMPLE
 
@@ -171,32 +172,4 @@ The service will:
 - [[https://orgmode.org/][Org-mode Official Site]]
 - [[https://protesilaos.com/emacs/denote][Denote Package by Prot]]
 
-* TODOS
 
-** Development Environment
-- [ ] =use asdf= or something like that in =.envrc= needs to actually work
-- [ ] Placeholder data only in example systemd unit or env files
-- [ ] Option for deployment on a mac (without systemd?)
-- [ ] Containerize server for easy deployment?
-
-** Enhanced Zapier Integration
-- [ ] Test error handling and possibly add =inputFormat= for validation
-- [X] Add heading-based filing: option to insert TODOs under specific org headings instead of EOF
-  - Add `heading` parameter to `CreateTodoRequest` model
-  - TODO level = heading level + 1 (if heading is `*`, TODO becomes `**`)
-  - Insert before next same-level heading (not immediately after target heading)
-    - Preserves chronological order of existing TODOs
-    - Feels natural like appending to end of section
-    - Handles sub-headings gracefully
-  - Edge cases: last section (insert at EOF), empty section, heading not found
-  - If heading doesn't exist: create heading at EOF, then add TODO under it
-  - Modify `append_todo_to_file()` to use insertion logic instead of simple append
-- [ ] (Much later) Dynamic file metadata: read TODO states and tags from target file to populate Zapier field choices
-- [X] Better help text in Zapier app
-- [X] ID generation for any created headings
-- [X] Replace string date fields with =datetime= field types for better UX
-- [X] Add time-of-day support for scheduling (=SCHEDULED: <2025-01-20 Mon 14:30>=)  
-- [X] Implement recurring TODO support with conditional fields (checkbox → interval + unit)
-- [X] Support org-mode repeat syntax (=+1w=, =+2d=, =+1m=, etc.)
-- [X] Support different repeat types: standard (=+=), completion-based (=.+=), and cumulative (=++=)
-- [X] Add proper datetime conversion from Zapier's ISO format to org-mode format
