@@ -5,20 +5,20 @@ Wants=network.target
 
 [Service]
 Type=simple
-User=aleksozolins
-Group=aleksozolins
-WorkingDirectory=/home/aleksozolins/code/org-bridge
-ExecStart=/home/aleksozolins/code/org-bridge/venv/bin/python server/main.py
+User=YOUR_USERNAME
+Group=YOUR_USERNAME
+WorkingDirectory=/path/to/org-bridge
+ExecStart=/path/to/org-bridge/venv/bin/python server/main.py
 Restart=always
 RestartSec=5
 StandardOutput=journal
 StandardError=journal
 
 # Environment variables
-Environment=ORG_FILES_DIR=/home/aleksozolins/docs/org
+Environment=ORG_FILES_DIR=/path/to/your/org/files
 Environment=SERVER_HOST=0.0.0.0
 Environment=SERVER_PORT=8247
-Environment=PYTHONPATH=/home/aleksozolins/code/org-bridge/server
+Environment=PYTHONPATH=/path/to/org-bridge/server
 
 # Security
 NoNewPrivileges=true

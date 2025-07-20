@@ -24,7 +24,7 @@ org-bridge/
 │   │   └── create_todo.js
 │   ├── package.json
 │   └── test/
-├── org-bridge.service # systemd service file for production
+├── org-bridge.service.example # systemd service template
 ├── venv/            # Python virtual environment (auto-created)
 ├── .tool-versions   # asdf version management
 ├── .envrc           # direnv configuration
@@ -108,7 +108,16 @@ To run the server as a background service using systemd:
 ** Setup systemd service
 
 #+BEGIN_SRC bash
-# Copy the service file
+# Copy and customize the service file
+cp org-bridge.service.example org-bridge.service
+
+# Edit org-bridge.service to update:
+# - User/Group: Replace YOUR_USERNAME with your actual username
+# - WorkingDirectory: Replace /path/to/org-bridge with actual project path
+# - ExecStart: Replace /path/to/org-bridge with actual project path  
+# - Environment paths: Update ORG_FILES_DIR and PYTHONPATH
+
+# Copy to systemd
 sudo cp org-bridge.service /etc/systemd/system/
 
 # Reload systemd and enable the service

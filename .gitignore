@@ -48,6 +48,12 @@ web_modules/
 # TypeScript cache
 *.tsbuildinfo
 
+# Zapier
+.zapierapprc
+
+# Local systemd service file (customized from example)
+org-bridge.service
+
 # Optional npm cache directory
 .npm
 

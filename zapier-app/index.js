@@ -13,7 +13,7 @@ module.exports = {
         label: 'Server Address',
         type: 'string',
         required: true,
-        helpText: 'The domain or IP address of your org-bridge server (e.g., ozolins.xyz or 192.168.1.100). See setup guide: https://github.com/your-repo/org-bridge#setup'
+        helpText: 'The domain or IP address of your org-bridge server (e.g., yourdomain.com or 192.168.1.100)'
       },
       {
         key: 'serverPort',
@@ -21,7 +21,7 @@ module.exports = {
         type: 'string',
         required: true,
         default: '8247',
-        helpText: 'The port your org-bridge server is running on (default: 8247). See setup guide: https://github.com/your-repo/org-bridge#setup'
+        helpText: 'The port your org-bridge server is running on (default: 8247)'
       }
     ],
     test: async (z, bundle) => {
