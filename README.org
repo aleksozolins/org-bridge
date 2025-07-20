@@ -2,7 +2,7 @@
 #+AUTHOR: Aleks Ozolins
 #+DATE: [2025-06-28]
 
-A self-hosted API server for Emacs org-mode files with an optional Zapier integration. Bridge your org-mode workflow with 8000+ apps via Zapier, or use the REST API directly for custom integrations and automation.
+A self-hosted API server for Emacs org-mode files with a public Zapier integration. Bridge your org-mode workflow with 8000+ apps via the "Org Bridge" Zapier app, or use the REST API directly for custom integrations and automation.
 
 * Architecture
 
@@ -25,6 +25,7 @@ org-bridge/
 │   ├── creates/     # Zapier action definitions
 │   │   └── create_todo.js
 │   ├── package.json
+│   ├── .zapierapprc.example # Zapier credentials template
 │   └── test/
 ├── venv/            # Python virtual environment (auto-created)
 ├── .tool-versions   # asdf version management
@@ -88,6 +89,41 @@ sudo systemctl start org-bridge.service
 ** API Documentation
 
 Once running, visit http://localhost:8247/docs for interactive API documentation.
+
+* Using the Zapier Integration
+
+** For End Users
+
+The Zapier integration is available publicly on Zapier.com as **"Org Bridge"**. 
+
+Once your server is running (Option 1 or 2 above), you can:
+
+1. Go to [[https://zapier.com/apps][zapier.com]] and search for "Org Bridge"
+2. Create a new Zap using Org Bridge as an action
+3. Configure it with your server address (e.g., =yourdomain.com:8247= or =192.168.1.100:8247=)
+4. Connect any trigger (Gmail, Slack, Trello, etc.) to create TODOs in your org files
+
+The integration supports all TODO features: states, priorities, tags, scheduling, recurring tasks, and heading-based organization.
+
+** For Developers (Forking the Zapier App)
+
+If you want to customize the Zapier integration:
+
+#+BEGIN_SRC bash
+cd zapier-app
+npm install
+
+# You'll need your own Zapier developer account and app
+# Copy the example config and add your credentials
+cp .zapierapprc.example .zapierapprc
+# Edit .zapierapprc with your actual Zapier app ID and key
+
+# Test and deploy your custom version
+zapier test
+zapier push
+#+END_SRC
+
+The =.zapierapprc= file contains your Zapier app credentials and is gitignored for security.
 
 * Service Management
 
