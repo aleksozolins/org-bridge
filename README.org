@@ -172,4 +172,21 @@ The service will:
 - [[https://orgmode.org/][Org-mode Official Site]]
 - [[https://protesilaos.com/emacs/denote][Denote Package by Prot]]
 
+* Development TODOs
+
+** Critical for Public Release
+- [ ] **Add API Key Authentication** - Required for Zapier public app approval
+  - Add `API_KEY` environment variable requirement
+  - Implement `X-API-Key` header validation in FastAPI endpoints
+  - Update Zapier app authentication to collect API key
+  - Update documentation with API key setup instructions
+  - Security: Protect all data-modifying endpoints (`POST /todos`, etc.)
+
+** Future Enhancements  
+- [ ] GET endpoints for reading existing TODOs
+- [ ] PUT endpoints for updating TODO states
+- [ ] WebDAV or CalDAV integration for agenda sync
+- [ ] Docker container for easier deployment
+- [ ] macOS deployment option (alternatives to systemd)
+
 
