@@ -17,14 +17,15 @@ org-bridge/
 ├── server/           # Python FastAPI server
 │   ├── main.py      # API server entry point
 │   ├── org_parser.py # Org-mode file parsing
-│   └── requirements.txt
+│   ├── requirements.txt
+│   ├── .env.example # Environment configuration template
+│   └── org-bridge.service.example # systemd service template
 ├── zapier-app/       # Zapier integration
 │   ├── index.js     # Zapier app definition
 │   ├── creates/     # Zapier action definitions
 │   │   └── create_todo.js
 │   ├── package.json
 │   └── test/
-├── org-bridge.service.example # systemd service template
 ├── venv/            # Python virtual environment (auto-created)
 ├── .tool-versions   # asdf version management
 ├── .envrc           # direnv configuration
@@ -41,94 +42,56 @@ org-bridge/
 #+BEGIN_SRC bash
 # Install project tool versions
 asdf install
-#+END_SRC
 
-** Environment Setup
-
-The project uses =direnv= for automatic environment management:
-
-#+BEGIN_SRC bash
 # Allow direnv to manage this directory
 direnv allow
-
-# This will automatically:
-# - Create a Python virtual environment (venv/)
-# - Activate it when you enter the directory
-# - Load environment variables from server/.env
 #+END_SRC
 
-** Server Setup (Python)
+This will automatically create and activate a Python virtual environment when you enter the directory.
+
+** Choose Your Setup
+
+*** Option 1: Development/Testing (Manual Run)
+
+For development, testing, or temporary use:
 
 #+BEGIN_SRC bash
-# The virtual environment is already activated by direnv
+# 1. Configure environment
+cp server/.env.example server/.env
+# Edit server/.env to set your ORG_FILES_DIR
+
+# 2. Install dependencies  
 pip install -r server/requirements.txt
 
-# Run the server (from project root)
+# 3. Run the server
 python server/main.py
 #+END_SRC
 
-* Features (Planned)
+The server runs on http://localhost:8247 using your =.env= configuration.
 
-- *TODO Management*: Create, update, and sync org-mode TODOs
-- *Agenda Integration*: Sync org agenda with calendars  
-- *Denote-style Notes*: Create timestamped notes with proper naming
-- *Real-time Sync*: File watching with webhook triggers
-- *Multi-directional*: Zapier → Org and Org → Zapier workflows
+*** Option 2: Production (Systemd Service)
 
-* 🔧 Development
-
-This project combines Python (server) and JavaScript (Zapier integration) to bridge the gap between org-mode and modern workflow tools.
-
-** Environment Setup
-
-The server uses environment variables for configuration. You can either:
-- Set them in your shell
-- Create =server/.env= file (loaded automatically by direnv)
-
-Key variables:
-- =ORG_FILES_DIR= - Path to your org files directory (default: =~/docs/org=)
-- =INBOX_FILENAME= - Inbox file name (default: =inbox.txt=)
-- =SERVER_PORT= - Server port (default: =8247=)
-
-** Virtual Environment
-
-The Python virtual environment is managed automatically by =direnv=:
-- Created in =venv/= directory
-- Activated automatically when entering project directory
-- Deactivated when leaving project directory
-
-** API Documentation
-
-Once the server is running, visit http://localhost:8247/docs for interactive API documentation.
-
-* Production Deployment
-
-To run the server as a background service using systemd:
-
-** Setup systemd service
+For permanent deployment as a background service:
 
 #+BEGIN_SRC bash
-# Copy and customize the service file
-cp org-bridge.service.example org-bridge.service
+# 1. Copy and customize the service file
+cp server/org-bridge.service.example server/org-bridge.service
+# Edit server/org-bridge.service to update paths and environment variables
 
-# Edit org-bridge.service to update:
-# - User/Group: Replace YOUR_USERNAME with your actual username
-# - WorkingDirectory: Replace /path/to/org-bridge with actual project path
-# - ExecStart: Replace /path/to/org-bridge with actual project path  
-# - Environment paths: Update ORG_FILES_DIR and PYTHONPATH
-
-# Copy to systemd
-sudo cp org-bridge.service /etc/systemd/system/
-
-# Reload systemd and enable the service
+# 2. Install and start the service
+sudo cp server/org-bridge.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable org-bridge.service
-
-# Start the service
 sudo systemctl start org-bridge.service
 #+END_SRC
 
-** Service management
+** API Documentation
+
+Once running, visit http://localhost:8247/docs for interactive API documentation.
+
+* Service Management
+
+Commands for managing the systemd service:
 
 #+BEGIN_SRC bash
 # Check service status
@@ -146,10 +109,25 @@ sudo systemctl stop org-bridge.service
 
 The service will:
 - Auto-start on boot
-- Auto-restart on failure
+- Auto-restart on failure  
 - Run as your user (not root)
 - Log to systemd journal
-- Use your existing virtual environment
+
+* Features (Current)
+
+- ✅ *TODO Creation*: Create org-mode TODOs with states, priorities, tags, scheduling
+- ✅ *Zapier Integration*: Pre-built Zapier action for creating TODOs
+- ✅ *File Organization*: Optional heading-based filing within org files
+- ✅ *Recurring TODOs*: Support for org-mode repeat syntax
+- ✅ *REST API*: Direct API access for custom integrations
+
+* Features (Planned)
+
+- *TODO Reading*: GET endpoints to read and filter existing TODOs
+- *TODO Updates*: Update existing TODO states, priorities, etc.
+- *Agenda Integration*: Sync org agenda with calendars  
+- *Denote-style Notes*: Create timestamped notes with proper naming
+- *Real-time Sync*: File watching with webhook triggers
 
 * Resources
 

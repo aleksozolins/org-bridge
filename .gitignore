@@ -52,7 +52,10 @@ web_modules/
 .zapierapprc
 
 # Local systemd service file (customized from example)
-org-bridge.service
+server/org-bridge.service
+
+# Environment variables (personal configuration)
+server/.env
 
 # Optional npm cache directory
 .npm

@@ -62,7 +62,7 @@ module.exports = {
         'EFFORT': '1:00'
       },
       body: 'Discuss weekly goals and blockers',
-      file_path: '/path/to/inbox.txt',
+      file_path: '/path/to/inbox.org',
       heading: 'Work Projects'
     },
     inputFields: [

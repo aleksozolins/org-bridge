@@ -413,7 +413,7 @@ def append_todo_to_file(
     return todo_text, generated_uuid
 
 
-def get_inbox_file_path(org_dir: str, inbox_filename: str = "inbox.txt") -> str:
+def get_inbox_file_path(org_dir: str, inbox_filename: str = "inbox.org") -> str:
     """
     Get the path to the inbox file.
     
