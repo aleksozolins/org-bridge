@@ -78,15 +78,15 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
-@app.get("/todos", response_model=List[TodoItem])
-async def get_todos(
-    state: Optional[str] = None,
-    tag: Optional[str] = None,
-    file_name: Optional[str] = None
-):
-    """Get all TODO items, optionally filtered by state, tag, or file"""
-    # TODO: Implement org file parsing
-    return []
+# @app.get("/todos", response_model=List[TodoItem])
+# async def get_todos(
+#     state: Optional[str] = None,
+#     tag: Optional[str] = None,
+#     file_name: Optional[str] = None
+# ):
+#     """Get all TODO items, optionally filtered by state, tag, or file"""
+#     # TODO: Implement org file parsing
+#     return []
 
 @app.post("/todos", response_model=TodoItem)
 async def create_todo(todo: CreateTodoRequest):
@@ -154,47 +154,47 @@ async def create_todo(todo: CreateTodoRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to create TODO: {str(e)}")
 
-@app.put("/todos/{todo_id}", response_model=TodoItem)
-async def update_todo(todo_id: str, todo: CreateTodoRequest):
-    """Update an existing TODO item"""
-    # TODO: Implement todo update
-    return TodoItem(
-        id=todo_id,
-        title=todo.title,
-        state=todo.state,
-        priority=todo.priority,
-        tags=todo.tags,
-        scheduled=todo.scheduled,
-        deadline=todo.deadline,
-        include_scheduled_time=todo.include_scheduled_time,
-        include_deadline_time=todo.include_deadline_time,
-        is_recurring=todo.is_recurring,
-        recurring_field=todo.recurring_field,
-        repeat_every=todo.repeat_every,
-        repeat_unit=todo.repeat_unit,
-        repeat_type=todo.repeat_type,
-        properties=todo.properties,
-        body=todo.body
-    )
+# @app.put("/todos/{todo_id}", response_model=TodoItem)
+# async def update_todo(todo_id: str, todo: CreateTodoRequest):
+#     """Update an existing TODO item"""
+#     # TODO: Implement todo update
+#     return TodoItem(
+#         id=todo_id,
+#         title=todo.title,
+#         state=todo.state,
+#         priority=todo.priority,
+#         tags=todo.tags,
+#         scheduled=todo.scheduled,
+#         deadline=todo.deadline,
+#         include_scheduled_time=todo.include_scheduled_time,
+#         include_deadline_time=todo.include_deadline_time,
+#         is_recurring=todo.is_recurring,
+#         recurring_field=todo.recurring_field,
+#         repeat_every=todo.repeat_every,
+#         repeat_unit=todo.repeat_unit,
+#         repeat_type=todo.repeat_type,
+#         properties=todo.properties,
+#         body=todo.body
+#     )
 
-@app.get("/agenda")
-async def get_agenda(
-    start_date: Optional[str] = None,
-    end_date: Optional[str] = None
-):
-    """Get agenda items for a date range"""
-    # TODO: Implement agenda parsing
-    return []
+# @app.get("/agenda")
+# async def get_agenda(
+#     start_date: Optional[str] = None,
+#     end_date: Optional[str] = None
+# ):
+#     """Get agenda items for a date range"""
+#     # TODO: Implement agenda parsing
+#     return []
 
-@app.post("/notes")
-async def create_note(note: NoteRequest):
-    """Create a new denote-style note"""
-    # TODO: Implement denote note creation
-    return {
-        "message": "Note created",
-        "title": note.title,
-        "file_name": f"placeholder--{note.title.lower().replace(' ', '-')}.org"
-    }
+# @app.post("/notes")
+# async def create_note(note: NoteRequest):
+#     """Create a new denote-style note"""
+#     # TODO: Implement denote note creation
+#     return {
+#         "message": "Note created",
+#         "title": note.title,
+#         "file_name": f"placeholder--{note.title.lower().replace(' ', '-')}.org"
+#     }
 
 if __name__ == "__main__":
     import uvicorn
