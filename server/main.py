@@ -98,7 +98,34 @@ async def health_check():
 
 @app.post("/todos", response_model=TodoItem)
 async def create_todo(todo: CreateTodoRequest):
-    """Create a new TODO item in an org file"""
+    """
+    Create a new TODO item in an org file.
+    
+    **Field Guide:**
+    - `title`: The TODO description/heading text
+    - `state`: TODO state - typically "TODO", "DONE", "NEXT", "WAITING"
+    - `priority`: Optional priority level - "A" (high), "B" (medium), "C" (low)
+    - `tags`: List of strings for categorization (e.g., ["work", "urgent"])
+    - `scheduled`: ISO datetime when you plan to work on it (appears in org agenda)
+    - `deadline`: ISO datetime for hard deadline (org shows warnings as it approaches)
+    - `file_name`: Which org file to write to (defaults to inbox.org)
+    - `heading`: Optional heading to file under (creates if doesn't exist)
+    - `is_recurring`: Enable recurring pattern for habits/regular tasks
+    - `properties`: Key-value pairs for org properties drawer
+    - `body`: Additional notes/content below the TODO heading
+    
+    **Example org-mode output:**
+    ```
+    * TODO [#A] Weekly team meeting :work:meeting:
+    SCHEDULED: <2025-01-20 Mon 14:30> DEADLINE: <2025-01-22 Wed>
+    :PROPERTIES:
+    :ID: 12345678-abcd-1234-5678-123456789abc
+    :CATEGORY: work
+    :END:
+    
+    Discuss quarterly goals and project updates.
+    ```
+    """
     try:
         # Determine which file to write to
         if todo.file_name:
