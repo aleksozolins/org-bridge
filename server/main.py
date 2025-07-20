@@ -102,28 +102,37 @@ async def create_todo(todo: CreateTodoRequest):
     Create a new TODO item in an org file.
     
     **Field Guide:**
-    - `title`: The TODO description/heading text
-    - `state`: TODO state - typically "TODO", "DONE", "NEXT", "WAITING"
-    - `priority`: Optional priority level - "A" (high), "B" (medium), "C" (low)
-    - `tags`: List of strings for categorization (e.g., ["work", "urgent"])
-    - `scheduled`: ISO datetime when you plan to work on it (appears in org agenda)
-    - `deadline`: ISO datetime for hard deadline (org shows warnings as it approaches)
-    - `file_name`: Which org file to write to (defaults to inbox.org)
-    - `heading`: Optional heading to file under (creates if doesn't exist)
-    - `is_recurring`: Enable recurring pattern for habits/regular tasks
-    - `properties`: Key-value pairs for org properties drawer
-    - `body`: Additional notes/content below the TODO heading
+    - `title`: The TODO description/heading text (e.g., "Review quarterly reports")
+    - `state`: TODO state (e.g., "TODO", "DONE", "NEXT", "WAITING", "CANCELLED")
+    - `priority`: Priority level (e.g., "A", "B", "C" or null for no priority)
+    - `tags`: List of strings for categorization (e.g., ["work", "urgent", "meeting"])
+    - `scheduled`: ISO datetime when you plan to work on it (e.g., "2025-01-20T14:30:00")
+    - `deadline`: ISO datetime for hard deadline (e.g., "2025-01-22T17:00:00")
+    - `include_scheduled_time`: Include time in scheduled timestamp (true = "14:30", false = date only)
+    - `include_deadline_time`: Include time in deadline timestamp (true = "17:00", false = date only)
+    - `file_name`: Which org file to write to (e.g., "work.org", defaults to "inbox.org")
+    - `heading`: Heading to file under (e.g., "Projects", creates if doesn't exist)
+    - `body`: Additional notes/content (e.g., "Need to review Q4 numbers before meeting")
+    - `properties`: Key-value pairs (e.g., {"CATEGORY": "work", "EFFORT": "2:00"})
+    
+    **Recurring TODO fields:**
+    - `is_recurring`: Enable recurring pattern (true/false)
+    - `recurring_field`: Which date repeats (e.g., "scheduled" or "deadline")
+    - `repeat_every`: Interval number (e.g., 1, 2, 7)
+    - `repeat_unit`: Time unit (e.g., "days", "weeks", "months", "years")
+    - `repeat_type`: Repeat behavior (e.g., "standard", "from_completion", "catch_up")
     
     **Example org-mode output:**
     ```
     * TODO [#A] Weekly team meeting :work:meeting:
-    SCHEDULED: <2025-01-20 Mon 14:30> DEADLINE: <2025-01-22 Wed>
+    SCHEDULED: <2025-01-20 Mon 14:30 +1w>
     :PROPERTIES:
     :ID: 12345678-abcd-1234-5678-123456789abc
     :CATEGORY: work
+    :EFFORT: 1:00
     :END:
     
-    Discuss quarterly goals and project updates.
+    Review quarterly goals and discuss project updates.
     ```
     """
     try:
