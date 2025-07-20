@@ -68,6 +68,12 @@ class NoteRequest(BaseModel):
 
 @app.get("/")
 async def root():
+    """
+    Get server information and configuration status.
+    
+    Returns server version, configured org files directory, inbox file path,
+    and whether the org directory exists and is accessible.
+    """
     return {
         "message": "Org-Bridge API Server",
         "version": "0.1.0",
