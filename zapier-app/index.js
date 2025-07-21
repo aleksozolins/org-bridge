@@ -6,26 +6,25 @@ module.exports = {
 
   authentication: {
     type: 'custom',
-    connectionLabel: '{{bundle.authData.serverAddress}}:{{bundle.authData.serverPort}}',
+    connectionLabel: '{{bundle.authData.serverAddress}}',
     fields: [
       {
         key: 'serverAddress',
-        label: 'Server Address',
+        label: 'Server URL',
         type: 'string',
         required: true,
-        helpText: 'The domain or IP address of your org-bridge server (e.g., yourdomain.com or 192.168.1.100)'
-      },
-      {
-        key: 'serverPort',
-        label: 'Server Port',
-        type: 'string',
-        required: true,
-        default: '8247',
-        helpText: 'The port your org-bridge server is running on (default: 8247)'
+        helpText: 'The full URL of your org-bridge server including protocol and port (e.g., https://yourdomain.com:8247 or http://192.168.1.100:8247)',
+        placeholder: 'https://yourdomain.com:8247'
       }
     ],
     test: async (z, bundle) => {
-      const serverUrl = `http://${bundle.authData.serverAddress}:${bundle.authData.serverPort}`;
+      let serverUrl = bundle.authData.serverAddress;
+      
+      // Ensure URL ends without trailing slash for consistency
+      if (serverUrl.endsWith('/')) {
+        serverUrl = serverUrl.slice(0, -1);
+      }
+      
       const response = await z.request(`${serverUrl}/`);
       
       // Check if response looks like our org-bridge server

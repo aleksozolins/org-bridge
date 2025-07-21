@@ -1,5 +1,11 @@
 const perform = async (z, bundle) => {
-  const serverUrl = `http://${bundle.authData.serverAddress}:${bundle.authData.serverPort}`;
+  // Get the full server URL (now includes protocol and port)
+  let serverUrl = bundle.authData.serverAddress;
+  
+  // Ensure URL ends without trailing slash for consistency
+  if (serverUrl.endsWith('/')) {
+    serverUrl = serverUrl.slice(0, -1);
+  }
   
   // Build the request body from input fields
   const requestBody = {
