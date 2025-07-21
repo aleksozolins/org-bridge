@@ -2,6 +2,11 @@ const perform = async (z, bundle) => {
   // Get the full server URL (now includes protocol and port)
   let serverUrl = bundle.authData.serverAddress;
   
+  // Manual validation to ensure URL matches our expectations (addresses D026)
+  if (!/^https?:\/\/[a-zA-Z0-9.-]+(:[0-9]+)?$/.test(serverUrl)) {
+    throw new Error('Server URL must be a valid HTTP/HTTPS URL with hostname and optional port');
+  }
+  
   // Ensure URL ends without trailing slash for consistency
   if (serverUrl.endsWith('/')) {
     serverUrl = serverUrl.slice(0, -1);
