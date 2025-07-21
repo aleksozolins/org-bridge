@@ -1,7 +1,7 @@
 {
   "name": "org-bridge",
   "version": "1.0.0",
-  "description": "Zapier integration for org-bridge - create TODOs in org-mode files from 8000+ apps",
+  "description": "Org Bridge is a Zapier integration that connects your org-mode files with 8000+ apps for seamless productivity workflows",
   "scripts": {
     "test": "jest --testTimeout 10000"
   },
