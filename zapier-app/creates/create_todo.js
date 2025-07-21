@@ -38,6 +38,7 @@ const perform = async (z, bundle) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${bundle.authData.apiKey}`
     },
     body: requestBody,
   });

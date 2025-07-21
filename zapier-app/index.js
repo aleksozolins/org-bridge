@@ -15,6 +15,14 @@ module.exports = {
         required: true,
         helpText: 'The full URL of your org-bridge server including protocol and port (e.g., https://yourdomain.com:8247 or http://192.168.1.100:8247)',
         placeholder: 'https://yourdomain.com:8247'
+      },
+      {
+        key: 'apiKey',
+        label: 'API Key',
+        type: 'string',
+        required: true,
+        helpText: 'Your org-bridge server API key (set via ORG_BRIDGE_API_KEY environment variable)',
+        placeholder: 'your-api-key-here'
       }
     ],
     test: async (z, bundle) => {
@@ -30,13 +38,18 @@ module.exports = {
         serverUrl = serverUrl.slice(0, -1);
       }
       
-      const response = await z.request(`${serverUrl}/`);
+      // Test authentication by calling a protected endpoint
+      const response = await z.request({
+        url: `${serverUrl}/health`,
+        headers: {
+          'Authorization': `Bearer ${bundle.authData.apiKey}`
+        }
+      });
       
-      // Check if response looks like our org-bridge server
-      if (response.data && response.data.message === 'Org-Bridge API Server') {
+      if (response.data && response.data.status === 'healthy') {
         return response.data;
       } else {
-        throw new Error('Server did not respond with expected org-bridge API format');
+        throw new Error('Server did not respond with expected health check format');
       }
     },
   },

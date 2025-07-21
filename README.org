@@ -126,6 +126,77 @@ zapier push
 
 The =.zapierapprc= file contains your Zapier app credentials and is gitignored for security.
 
+* Org Bridge
+
+Org Bridge is a Zapier integration that connects your org-mode files with 8000+ apps for seamless productivity workflows.
+
+** API Key Authentication
+
+For security, org-bridge now requires API key authentication. You need to:
+
+1. Set an API key on your org-bridge server
+2. Use that same API key in your Zapier integration
+
+*** Generating an API Key
+
+**** Option 1: Using the built-in generator (recommended)
+#+BEGIN_SRC bash
+cd server/
+python generate_api_key.py
+#+END_SRC
+
+**** Option 2: Manual generation
+#+BEGIN_SRC bash
+# Using Python UUID
+python -c "import uuid; print(uuid.uuid4())"
+
+# Using uuidgen  
+uuidgen
+#+END_SRC
+
+*** Server Setup
+
+**** Option 1: Using .env file (local development)
+Create a =.env= file in the =server/= directory:
+
+#+BEGIN_SRC bash
+# Copy the example file
+cp server/.env.example server/.env
+
+# Generate an API key
+cd server/
+python generate_api_key.py
+
+# Then edit .env with your generated key and org files directory
+#+END_SRC
+
+**** Option 2: Using systemd service (production)
+Update your systemd service file with the API key:
+
+#+BEGIN_SRC ini
+[Service]
+# ... other settings ...
+Environment=ORG_FILES_DIR=/path/to/your/org/files
+Environment=ORG_BRIDGE_API_KEY=your-secure-api-key-here
+Environment=SERVER_HOST=0.0.0.0
+Environment=SERVER_PORT=8247
+#+END_SRC
+
+*** Zapier Setup
+
+When connecting your Zapier integration:
+
+1. Enter your server URL (e.g., =https://yourdomain.com:8247=)
+2. Enter the same API key you set on the server
+3. Test the connection
+
+*** Security Notes
+
+- Use a strong, unique API key (at least 32 characters)
+- Keep your API key secure and don't share it
+- Use HTTPS in production for encrypted communication
+- The API key is sent in the Authorization header as a Bearer token
+
 * Service Management
 
 Commands for managing the systemd service:

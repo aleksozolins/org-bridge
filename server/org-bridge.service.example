@@ -16,6 +16,7 @@ StandardError=journal
 
 # Environment variables
 Environment=ORG_FILES_DIR=/path/to/your/org/files
+Environment=ORG_BRIDGE_API_KEY=your-secure-api-key-here
 Environment=SERVER_HOST=0.0.0.0
 Environment=SERVER_PORT=8247
 Environment=PYTHONPATH=/path/to/org-bridge/server

@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional, Dict
 import os
@@ -17,9 +18,27 @@ app = FastAPI(
 ORG_FILES_DIR = os.getenv("ORG_FILES_DIR")
 if not ORG_FILES_DIR:
     raise ValueError("ORG_FILES_DIR environment variable is required")
+
+API_KEY = os.getenv("ORG_BRIDGE_API_KEY")
+if not API_KEY:
+    raise ValueError("ORG_BRIDGE_API_KEY environment variable is required")
+
 INBOX_FILENAME = os.getenv("INBOX_FILENAME", "inbox.org")
 SERVER_HOST = os.getenv("SERVER_HOST", "0.0.0.0")
 SERVER_PORT = int(os.getenv("SERVER_PORT", "8247"))
+
+# Security
+security = HTTPBearer()
+
+async def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Verify the API key from Authorization header"""
+    if credentials.credentials != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return credentials.credentials
 
 # Pydantic models
 class TodoItem(BaseModel):
@@ -73,6 +92,8 @@ async def root():
     
     Returns server version, configured org files directory, inbox file path,
     and whether the org directory exists and is accessible.
+    
+    This endpoint is public for Zapier connection testing.
     """
     return {
         "message": "Org-Bridge API Server",
@@ -83,21 +104,23 @@ async def root():
     }
 
 @app.get("/health")
-async def health_check():
+async def health_check(api_key: str = Depends(verify_api_key)):
+    """Health check endpoint (requires API key)"""
     return {"status": "healthy"}
 
 # @app.get("/todos", response_model=List[TodoItem])
 # async def get_todos(
 #     state: Optional[str] = None,
 #     tag: Optional[str] = None,
-#     file_name: Optional[str] = None
+#     file_name: Optional[str] = None,
+#     api_key: str = Depends(verify_api_key)
 # ):
 #     """Get all TODO items, optionally filtered by state, tag, or file"""
 #     # TODO: Implement org file parsing
 #     return []
 
 @app.post("/todos", response_model=TodoItem)
-async def create_todo(todo: CreateTodoRequest):
+async def create_todo(todo: CreateTodoRequest, api_key: str = Depends(verify_api_key)):
     """
     Create a new TODO item in an org file.
     
@@ -199,7 +222,7 @@ async def create_todo(todo: CreateTodoRequest):
         raise HTTPException(status_code=500, detail=f"Failed to create TODO: {str(e)}")
 
 # @app.put("/todos/{todo_id}", response_model=TodoItem)
-# async def update_todo(todo_id: str, todo: CreateTodoRequest):
+# async def update_todo(todo_id: str, todo: CreateTodoRequest, api_key: str = Depends(verify_api_key)):
 #     """Update an existing TODO item"""
 #     # TODO: Implement todo update
 #     return TodoItem(
@@ -224,14 +247,15 @@ async def create_todo(todo: CreateTodoRequest):
 # @app.get("/agenda")
 # async def get_agenda(
 #     start_date: Optional[str] = None,
-#     end_date: Optional[str] = None
+#     end_date: Optional[str] = None,
+#     api_key: str = Depends(verify_api_key)
 # ):
 #     """Get agenda items for a date range"""
 #     # TODO: Implement agenda parsing
 #     return []
 
 # @app.post("/notes")
-# async def create_note(note: NoteRequest):
+# async def create_note(note: NoteRequest, api_key: str = Depends(verify_api_key)):
 #     """Create a new denote-style note"""
 #     # TODO: Implement denote note creation
 #     return {
