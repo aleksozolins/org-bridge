@@ -4,12 +4,6 @@
 
 A self-hosted API server for Emacs org-mode files with a public Zapier integration. Bridge your org-mode workflow with 8000+ apps via the "Org Bridge" Zapier app, or use the REST API directly for custom integrations and automation.
 
-* Architecture
-
-#+BEGIN_EXAMPLE
-[Zapier] ↔ [Python API Server] ↔ [Org Files] ↔ [Dropbox/Sync] ↔ [Emacs]
-#+END_EXAMPLE
-
 * Project Structure
 
 #+BEGIN_EXAMPLE
@@ -89,13 +83,13 @@ sudo systemctl start org-bridge.service
 
 ** API Documentation
 
-Once running, visit http://localhost:8247/docs for interactive API documentation.
+Once running, visit http://localhost:{SERVER_PORT}/docs for interactive API documentation.
 
 * Using the Zapier Integration
 
 ** For End Users
 
-The Zapier integration is available publicly on Zapier.com as **"Org Bridge"**. 
+The Zapier integration is available privately on Zapier.com as **"Org Bridge"**.  Please contact me to get access. In the future I hope to make it publicly available.
 
 Once your server is running (Option 1 or 2 above), you can:
 
@@ -245,15 +239,14 @@ The service will:
 
 * Development TODOs
 
-** Critical for Public Release
 - [ ] **Add API Key Authentication** - Required for Zapier public app approval
   - Add `API_KEY` environment variable requirement
   - Implement `X-API-Key` header validation in FastAPI endpoints
   - Update Zapier app authentication to collect API key
   - Update documentation with API key setup instructions
   - Security: Protect all data-modifying endpoints (`POST /todos`, etc.)
-
-** Future Enhancements  
+- [ ] Add username/password auth for multiple users per server support???
+- [ ] Add ngrok as a deployment option
 - [ ] GET endpoints for reading existing TODOs
 - [ ] PUT endpoints for updating TODO states
 - [ ] WebDAV or CalDAV integration for agenda sync
